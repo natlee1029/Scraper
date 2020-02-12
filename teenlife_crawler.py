@@ -9,6 +9,7 @@ import csv
 
 def crawler(filename, index_filename):
     starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
+    #starting_url = "https://www.teenlife.com/search?q=&l=&c=&p=1"
     limiting_domain = "teenlife.com"
 
     links_visited = []
@@ -88,49 +89,60 @@ def find_links(soup, url, post_url, q, links_visited, limiting_domain):
         links_visited.append(post_url) 
 
 
-# def make_index(soup, index_dictionary):
-#     '''
-#     Adds words from course title and description to the index dictionary.
-#     Uses the helper function pull_words to map the set of words to the 
-#     associated course identifier.
+def make_index(soup, index_dictionary):
+    '''
+    Adds words from course title and description to the index dictionary.
+    Uses the helper function pull_words to map the set of words to the 
+    associated course identifier.
 
-#     Inputs:
-#         soup: soup object from the text of the HTML document
-#         index_dictionary: dictionary that maps words to course identifiers 
-#     '''
-#     main_words = set()
-#     tags = soup.find_all("div", class_ = "courseblock main")
-#     for tag in tags:
-#         main_words, course_id = pull_words(tag)
-#         subtags = util.find_sequence(tag)
-#         if subtags:
-#             for subtag in subtags:
-#                 seq_words, seq_id = pull_words(subtag)
-#                 index_dictionary[seq_id] = seq_words|main_words
-#         else:
-#             index_dictionary[course_id] = main_words
+    Inputs:
+        soup: soup object from the text of the HTML document
+        index_dictionary: dictionary that maps words to course identifiers 
+    '''
+    main_words = set()
+    tags = soup.find_all("div", class_ = "small-6 columns field-name")
+    for tag in tags:
+        titles, course_id = pull_values(tag)
+        subtags = util.find_sequence(tag)
+        #definitely still in progress
+        if subtags:
+            for subtag in subtags:
+                seq_words, seq_id = pull_words(subtag)
+                index_dictionary[seq_id] = seq_words|titles
+        else:
+            index_dictionary[title] = value
 
 
-# def pull_words(tag):
-#     '''
-#     Creates a set of words and the associated course identifier.
+def pull_values(tag):
+    '''
+    Creates a set of words and the associated course identifier.
 
-#     Inputs:
-#         tag: div tag object from the soup object  
+    Inputs:
+        tag: div tag object from the soup object  
 
-#     Outputs:
-#         (words, course_id): (set of words tied to the course identifier, 
-#         course identifier) 
-#     '''
-#     title_tag = tag.find_all("p", class_="courseblocktitle")
-#     desc_tag = tag.find_all("p", class_="courseblockdesc")
-#     title_and_desc = title_tag[0].text + desc_tag[0].text
-#     course_title = title_and_desc.replace(u"\xa0",u" ")
-#     course_id = course_title[0:10]
-#     course_title = course_title.lower()
-#     title_words = re.findall('[a-z][a-z0-9]*', course_title)
-#     words = set()
-#     for title_word in title_words:
-#         if title_word not in INDEX_IGNORE:
-#             words.add(title_word)
-#     return (words, course_id)
+    Outputs:
+        (words, course_id): (set of words tied to the course identifier, 
+        course identifier) 
+    '''
+    search_dictionary = {}
+    name_tag = tag.find_all("div", class_="small-6 columns field-name")
+    value_tag = tag.find_all("div", class_="small-6 columns field-value")
+    names_txt = names_txt.text
+    values_txt = values_txt.text
+    if re.search(r'$', values_txt):
+    	values_txt = values_txt[1:]
+    	values_txt = int(values_txt.replace(',', ''))
+
+    #if numbers need to be integer, then would be integer
+
+
+    # title_and_desc = title_tag[0].text + desc_tag[0].text
+    # course_title = title_and_desc.replace(u"\xa0",u" ")
+    # course_id = course_title[0:10]
+    # course_title = course_title.lower()
+    # names_txt = re.findall('[a-z][a-z0-9]*', course_title)
+    names = set()
+    for name in names_txt:
+        if name not in INDEX_IGNORE:
+            names.add(name)
+    return (names, values_txt) #problem is they aren't linked right now
