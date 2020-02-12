@@ -99,18 +99,16 @@ def make_index(soup, index_dictionary):
         soup: soup object from the text of the HTML document
         index_dictionary: dictionary that maps words to course identifiers 
     '''
-    main_words = set()
-    tags = soup.find_all("div", class_ = "small-6 columns field-name")
+    tags = soup.find_all("div", class_ = "row field")
     for tag in tags:
-        titles, course_id = pull_values(tag)
-        subtags = util.find_sequence(tag)
-        #definitely still in progress
-        if subtags:
-            for subtag in subtags:
-                seq_words, seq_id = pull_words(subtag)
-                index_dictionary[seq_id] = seq_words|titles
-        else:
-            index_dictionary[title] = value
+        title, value = pull_values(tag)
+        index_dictionary[title] = value
+        # subtags = util.find_sequence(tag)
+        # #definitely still in progress
+        # if subtags:
+        #     for subtag in subtags:
+        #         seq_words, seq_id = pull_words(subtag)
+        #         index_dictionary[seq_id] = seq_words|titles
 
 
 def pull_values(tag):
@@ -126,13 +124,13 @@ def pull_values(tag):
     '''
     search_dictionary = {}
     name_tag = tag.find_all("div", class_="small-6 columns field-name")
+    name = name_tag[0].text
     value_tag = tag.find_all("div", class_="small-6 columns field-value")
-    names_txt = names_txt.text
-    values_txt = values_txt.text
-    if re.search(r'$', values_txt):
-    	values_txt = values_txt[1:]
-    	values_txt = int(values_txt.replace(',', ''))
-
+    value = value_tag[0].text
+    if re.search(r'$', value):
+        value = value[1:]
+        value = int(value.replace(',', ''))
+    return (name, value)
     #if numbers need to be integer, then would be integer
 
 
@@ -141,8 +139,8 @@ def pull_values(tag):
     # course_id = course_title[0:10]
     # course_title = course_title.lower()
     # names_txt = re.findall('[a-z][a-z0-9]*', course_title)
-    names = set()
-    for name in names_txt:
-        if name not in INDEX_IGNORE:
-            names.add(name)
-    return (names, values_txt) #problem is they aren't linked right now
+    # names = set()
+    # for name in names_txt:
+    #     if name not in INDEX_IGNORE:
+    #         names.add(name)
+    # return (names, values_txt) #problem is they aren't linked right now
