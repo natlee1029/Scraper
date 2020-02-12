@@ -42,7 +42,7 @@ def read_request(request):
     '''
 
     try:
-        return request.text.encode('iso-8859-1')
+        return request.text.encode('utf-8')
     except Exception:
         print("read failed: " + request.url)
         return ""
