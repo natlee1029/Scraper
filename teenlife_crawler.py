@@ -101,8 +101,8 @@ def make_index(soup, index_dictionary):
     '''
     tags = soup.find_all("div", class_ = "row field")
     for tag in tags:
-        title, value = pull_values(tag)
-        index_dictionary[title] = value
+        name, value = pull_values(tag)
+        index_dictionary[name] = value
         # subtags = util.find_sequence(tag)
         # #definitely still in progress
         # if subtags:
