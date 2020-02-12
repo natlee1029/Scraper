@@ -8,8 +8,8 @@ import csv
 
 
 def crawler(filename, index_filename):
-    starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
-    #starting_url = "https://www.teenlife.com/search?q=&l=&c=&p=1"
+    # starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
+    #starting_url = "https://www.teenlife.com/search?q=&l=&c=Summer%20Program&p=1"
     limiting_domain = "teenlife.com"
 
     links_visited = []
@@ -122,12 +122,21 @@ def pull_values(tag):
         (words, course_id): (set of words tied to the course identifier, 
         course identifier) 
     '''
-    search_dictionary = {}
+    #string with ascii values, can I replace 6 or 8 with *? using regex?
+    #way to pull list of 
     name_tag = tag.find_all("div", class_="small-6 columns field-name")
     name = name_tag[0].text
-    value_tag = tag.find_all("div", class_="small-6 columns field-value")
-    value = value_tag[0].text
-    if re.search(r'$', value):
+    name = re.sub(r'[^\w\s]','',s)
+    values_tag = tag.find_all("div", class_="small-6 columns field-value")
+    if len(values_tag) == 1:
+        actual_tag = value_tag[0].find_all('span')
+        for value in actual_tag:
+            value = value.strip(',') 
+            value = value_tag.text
+            value = re.sub(r''[&\w\s]','',)
+            values.append(value)
+    values = re.sub(r'[&\w\s]','',s)
+    if "$" in value:
         value = value[1:]
         value = int(value.replace(',', ''))
     return (name, value)
