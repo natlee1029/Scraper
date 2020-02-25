@@ -7,32 +7,40 @@ import sys
 import csv
 
 
-def crawler(filename, index_filename):
+def crawler():
     # starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
-    #starting_url = "https://www.teenlife.com/search?q=&l=&c=Summer%20Program&p=1"
+    starting_url = "https://www.teenlife.com/search?q=&l=&c=Summer%20Program&p=1"
     limiting_domain = "teenlife.com"
+    parsing_default_domain = "https://www.teenlife.com/search"
+    info_default_domain = "https://www.teenlife.com"
 
+    threshold = 10
+    numpages = 0
     links_visited = []
     index_dictionary = {}
     pages_crawled = 0
-    q = queue.Queue()
-    q.put(starting_url)
-    while q.empty() == False and pages_crawled < num_pages_to_crawl:
-        link = q.get()
-        mini_crawler(link, q, links_visited, limiting_domain, index_dictionary)
-        # add function here to pull information from the websites 
-        pages_crawled += 1
-
-    with open(course_map_filename, 'r') as f:
-        mapping = json.load(f)
-    with open(index_filename, 'w', newline='') as csvfile:
-        writer = csv.writer(csvfile)
-        for key,values in index_dictionary.items():
-            for value in values:
-                writer.writerow([str(mapping[key]) + '|' + value])
+    page_parser_q = queue.Queue()
+    pull_info_q = queue.Queue()
+    page_parser_q.put(starting_url)
+    while page_parser_q.empty() == False and numpages <= threshold:
+        link = page_parser_q.get()
+        print(link)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        #make_index(pull_info_q, index_dictionary)
+        numpages += 1
 
 
-def mini_crawler(url, q, links_visited, limiting_domain, index_dictionary):
+    print(list(pull_info_q.queue))
+    # with open(course_map_filename, 'r') as f:
+    #     mapping = json.load(f)
+    # with open(index_filename, 'w', newline='') as csvfile:
+    #     writer = csv.writer(csvfile)
+    #     for key,values in index_dictionary.items():
+    #         for value in values:
+    #             writer.writerow([str(mapping[key]) + '|' + value])
+
+
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of 
     words with associated course identifier.
@@ -54,16 +62,17 @@ def mini_crawler(url, q, links_visited, limiting_domain, index_dictionary):
         return
     html = util.read_request(request)
     soup = bs4.BeautifulSoup(html, features="html5lib")
-    # make_index(soup, index_dictionary)
-    find_links(soup, url, post_url, q, links_visited, limiting_domain)
+    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain)
     tag_list = soup.find_all("ul", attrs = {"class": "pagination"})
-    parser = tag_list[0].findChild()
-    next_page = parser.next_sibling.next_sibling.findChild().get('href')
-    q.put(next_page)
+    current_page = tag_list[0].find_all("li", attrs = {"class": "current"})
+    next_page = current_page[0].next_sibling.next_sibling.findChild()
+    next_page_href = next_page.get('href')
+    next_page_href = parsing_default_domain + next_page_href
+    page_parser_q.put(next_page_href)
 
 
 
-def find_links(soup, url, post_url, q, links_visited, limiting_domain):
+def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain):
     '''
     Adds links to be visited to the queue 'q' and adds links visited to the list
     'links_visited.'
@@ -80,16 +89,17 @@ def find_links(soup, url, post_url, q, links_visited, limiting_domain):
     for tag in tag_list:
         href_tag = tag.findChild()
         possible_link = href_tag.get('href')
+        possible_link = info_default_domain + possible_link
         actual_link = util.convert_if_relative_url(post_url, possible_link)
         if actual_link is not None and actual_link not in links_visited:
             if util.is_url_ok_to_follow(actual_link, limiting_domain):
-                q.put(actual_link)
+                pull_info_q.put(actual_link)
     links_visited.append(url)
     if post_url != url:
         links_visited.append(post_url) 
 
 
-def make_index(soup, index_dictionary):
+def make_index(pull_info_q, index_dictionary):
     '''
     Adds words from course title and description to the index dictionary.
     Uses the helper function pull_words to map the set of words to the 
@@ -99,6 +109,8 @@ def make_index(soup, index_dictionary):
         soup: soup object from the text of the HTML document
         index_dictionary: dictionary that maps words to course identifiers 
     '''
+
+    #iterate through the q delete the links as you go
     tags = soup.find_all("div", class_ = "row field")
     for tag in tags:
         name, value = pull_values(tag)
@@ -111,35 +123,35 @@ def make_index(soup, index_dictionary):
         #         index_dictionary[seq_id] = seq_words|titles
 
 
-def pull_values(tag):
-    '''
-    Creates a set of words and the associated course identifier.
+# def pull_values(tag):
+#     '''
+#     Creates a set of words and the associated course identifier.
 
-    Inputs:
-        tag: div tag object from the soup object  
+#     Inputs:
+#         tag: div tag object from the soup object  
 
-    Outputs:
-        (words, course_id): (set of words tied to the course identifier, 
-        course identifier) 
-    '''
-    #string with ascii values, can I replace 6 or 8 with *? using regex?
-    #way to pull list of 
-    name_tag = tag.find_all("div", class_="small-6 columns field-name")
-    name = name_tag[0].text
-    name = re.sub(r'[^\w\s]','',s)
-    values_tag = tag.find_all("div", class_="small-6 columns field-value")
-    if len(values_tag) == 1:
-        actual_tag = value_tag[0].find_all('span')
-        for value in actual_tag:
-            value = value.strip(',') 
-            value = value_tag.text
-            value = re.sub(r''[&\w\s]','',)
-            values.append(value)
-    values = re.sub(r'[&\w\s]','',s)
-    if "$" in value:
-        value = value[1:]
-        value = int(value.replace(',', ''))
-    return (name, value)
+#     Outputs:
+#         (words, course_id): (set of words tied to the course identifier, 
+#         course identifier) 
+#     '''
+#     #string with ascii values, can I replace 6 or 8 with *? using regex?
+#     #way to pull list of 
+#     name_tag = tag.find_all("div", class_="small-6 columns field-name")
+#     name = name_tag[0].text
+#     name = re.sub(r'[^\w\s]','',s)
+#     values_tag = tag.find_all("div", class_="small-6 columns field-value")
+#     if len(values_tag) == 1:
+#         actual_tag = value_tag[0].find_all('span')
+#         for value in actual_tag:
+#             value = value.strip(',') 
+#             value = value_tag.text
+#             value = re.sub(r''[&\w\s]','',)
+#             values.append(value)
+#     values = re.sub(r'[&\w\s]','',s)
+#     if "$" in value:
+#         value = value[1:]
+#         value = int(value.replace(',', ''))
+#     return (name, value)
     #if numbers need to be integer, then would be integer
 
 
