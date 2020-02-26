@@ -110,16 +110,32 @@ def make_index(pull_info_q, index_dictionary):
 
     #iterate through the q delete the links as you go
     tags = soup.find_all("div", class_ = "row field")
+    title = soup.find_all("title")
+    title = title[0].text
+    title = re.sub(r'[^\w\s]','',title).lower()
+    index_dictionary['title'] = title 
+    link = soup.find_all("div", id="website_link")
+    href = link[0].a.get("href")
+    index_dictionary['title'][title]['website'] = href  
+    location = soup.find_all("div", itemprop="location")  
+    location = location.text
+    location = re.sub(r'[^\w\s]','',location).lower()    
+    index_dictionary['title'][title]['location'] = location
     for tag in tags:
         name, value = pull_values(tag)
-        index_dictionary[name] = value
-        subtags = util.find_sequence(tag)
-        #definitely still in progress
-        if subtags:
-            for subtag in subtags:
-                seq_words, seq_id = pull_values(subtag)
-                index_dictionary[seq_id] = seq_words|name
-                #union/combination of sets
+        index_dictionary[title][name] = value
+    index_dictionary = index_dictionary.update({title:{'website', 'location'}})
+#finish matching key=title to keys of location, website, criteria of the program, etc.
+
+#is the soup right?
+    # return index_dictionary
+        # subtags = util.find_sequence(tag)
+        # #definitely still in progress
+        # if subtags:
+        #     for subtag in subtags:
+        #         seq_words, seq_id = pull_values(subtag)
+        #         index_dictionary[seq_id] = seq_words|name
+        #         #union/combination of sets
 
 
 def pull_values(tag):
@@ -138,20 +154,16 @@ def pull_values(tag):
     # name_tag = tag.find_all("div", class_="small-6 columns field-name") \d
     name_tag = tag.find_all("span", class_="field-name")
     name = name_tag[0].text
-    name = re.sub(r'[^\w\s]','',s)
-    values_tags = tag.find_all("div", class_=re.compile(r'field-value'))
-    if len(values_tags) == 1:
-        actual_tag = value_tags[0].find_all('span')
-        for value in actual_tag:
-            value = value.strip(',') 
-            value = value_tags.text
-            value = re.sub(r'[&\w\s]','',)
-            values.append(value)
-    values = re.sub(r'[&\w\s]','',s)
-    if "$" in value:
-        value = value[1:]
-        value = int(value.replace(',', ''))
-    return (name, value)
+    name = re.sub(r'[^\w\s]','',name).lower()
+    value_tags = tag.find_all("div", class_=re.compile(r'field-value'))
+    # if len(values_tags) == 1:
+    actual_tag = value_tags[0].find_all('span')
+    values = []
+    for value in actual_tag:
+        value = value.text
+        value = re.sub(r'[^\w\s]','',value).lower()        
+        values.append(value)
+    return (name, values)
     # if numbers need to be integer, then would be integer
 
 
