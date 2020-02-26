@@ -101,9 +101,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
 
 def make_index(pull_info_q, index_dictionary):
     '''
-    Adds words from course title and description to the index dictionary.
-    Uses the helper function pull_words to map the set of words to the 
-    associated course identifier.
+    Adds words 
 
     Inputs:
         soup: soup object from the text of the HTML document
@@ -115,44 +113,46 @@ def make_index(pull_info_q, index_dictionary):
     for tag in tags:
         name, value = pull_values(tag)
         index_dictionary[name] = value
-        # subtags = util.find_sequence(tag)
-        # #definitely still in progress
-        # if subtags:
-        #     for subtag in subtags:
-        #         seq_words, seq_id = pull_words(subtag)
-        #         index_dictionary[seq_id] = seq_words|titles
+        subtags = util.find_sequence(tag)
+        #definitely still in progress
+        if subtags:
+            for subtag in subtags:
+                seq_words, seq_id = pull_values(subtag)
+                index_dictionary[seq_id] = seq_words|name
+                #union/combination of sets
 
 
-# def pull_values(tag):
-#     '''
-#     Creates a set of words and the associated course identifier.
+def pull_values(tag):
+    '''
+    Creates a set of words and the associated course identifier.
 
-#     Inputs:
-#         tag: div tag object from the soup object  
+    Inputs:
+        tag: div tag object from the soup object  
 
-#     Outputs:
-#         (words, course_id): (set of words tied to the course identifier, 
-#         course identifier) 
-#     '''
-#     #string with ascii values, can I replace 6 or 8 with *? using regex?
-#     #way to pull list of 
-#     name_tag = tag.find_all("div", class_="small-6 columns field-name")
-#     name = name_tag[0].text
-#     name = re.sub(r'[^\w\s]','',s)
-#     values_tag = tag.find_all("div", class_="small-6 columns field-value")
-#     if len(values_tag) == 1:
-#         actual_tag = value_tag[0].find_all('span')
-#         for value in actual_tag:
-#             value = value.strip(',') 
-#             value = value_tag.text
-#             value = re.sub(r''[&\w\s]','',)
-#             values.append(value)
-#     values = re.sub(r'[&\w\s]','',s)
-#     if "$" in value:
-#         value = value[1:]
-#         value = int(value.replace(',', ''))
-#     return (name, value)
-    #if numbers need to be integer, then would be integer
+    Outputs:
+        (words, course_id): (set of words tied to the course identifier, 
+        course identifier) 
+    '''
+    #string with ascii values, can I replace 6 or 8 with *? using regex?
+    #way to pull list of 
+    # name_tag = tag.find_all("div", class_="small-6 columns field-name") \d
+    name_tag = tag.find_all("span", class_="field-name")
+    name = name_tag[0].text
+    name = re.sub(r'[^\w\s]','',s)
+    values_tags = tag.find_all("div", class_=re.compile(r'field-value'))
+    if len(values_tags) == 1:
+        actual_tag = value_tags[0].find_all('span')
+        for value in actual_tag:
+            value = value.strip(',') 
+            value = value_tags.text
+            value = re.sub(r'[&\w\s]','',)
+            values.append(value)
+    values = re.sub(r'[&\w\s]','',s)
+    if "$" in value:
+        value = value[1:]
+        value = int(value.replace(',', ''))
+    return (name, value)
+    # if numbers need to be integer, then would be integer
 
 
     # title_and_desc = title_tag[0].text + desc_tag[0].text
