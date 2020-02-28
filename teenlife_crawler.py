@@ -118,18 +118,17 @@ def make_index(soup, index_dictionary):
     title = soup.find_all("title")
     title = title[0].text
     title = re.sub(r'[^\w\s]','',title).lower()
-    index_dictionary['title'] = title 
     link = soup.find_all("div", id="website_link")
     href = link[0].a.get("href")
-    index_dictionary['title'][title]['website'] = href  
+    index_dictionary[title]['website'] = href  
     location = soup.find_all("div", itemprop="location")  
     location = location.text
     location = re.sub(r'[^\w\s]','',location).lower()    
-    index_dictionary['title'][title]['location'] = location
+    index_dictionary[title]['location'] = location
     for tag in tags:
         name, value = pull_values(tag)
         index_dictionary[title][name] = value
-    index_dictionary = index_dictionary.update({title:{'website', 'location'}})
+    # index_dictionary = index_dictionary.update({title:{'website', 'location'}})
 #finish matching key=title to keys of location, website, criteria of the program, etc.
 
 #is the soup right?
@@ -182,3 +181,36 @@ def pull_values(tag):
     #     if name not in INDEX_IGNORE:
     #         names.add(name)
     # return (names, values_txt) #problem is they aren't linked right now
+
+# def go(num_pages_to_crawl, course_map_filename, index_filename):
+#     '''
+#     Crawl the college catalog and generate a CSV file with an index.
+
+#     Inputs:
+#         num_pages_to_crawl: the number of pages to process during the crawl
+#         course_map_filename: the name of a JSON file that contains the mapping of
+#           course codes to course identifiers
+#         index_filename: the name for the CSV of the index.
+
+#     Outputs:
+#         CSV file of the index
+#     '''
+#     starting_url = ("http://www.classes.cs.uchicago.edu/archive/2015/winter"
+#                     "/12200-1/new.collegecatalog.uchicago.edu/index.html")
+#     limiting_domain = "classes.cs.uchicago.edu"
+#     links_visited = []
+#     index_dictionary = {}
+#     pages_crawled = 0
+#     q = queue.Queue()
+#     q.put(starting_url)
+#     while q.empty() == False and pages_crawled < num_pages_to_crawl:
+#         link = q.get()
+#         mini_crawler(link, q, links_visited, limiting_domain, index_dictionary)
+#         pages_crawled += 1
+#     with open(course_map_filename, 'r') as f:
+#         mapping = json.load(f)
+#     with open(index_filename, 'w', newline='') as csvfile:
+#         writer = csv.writer(csvfile)
+#         for key,values in index_dictionary.items():
+#             for value in values:
+#                 writer.writerow([str(mapping[key]) + '|' + value])
