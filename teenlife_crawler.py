@@ -42,19 +42,6 @@ def crawler():
     df = df.transpose()
     display(df)
     print(list(df.columns))
-    # with open(index_filename, 'w', newline='') as csvfile:
-    #     writer = csv.writer(csvfile)
-    #     for key,values in index_dictionary.items():
-    #         for value in values:
-    #             writer.writerow([str(mapping[key]) + '|' + value])
-
-    # with open(course_map_filename, 'r') as f:
-    #     mapping = json.load(f)
-    # with open(index_filename, 'w', newline='') as csvfile:
-    #     writer = csv.writer(csvfile)
-    #     for key,values in index_dictionary.items():
-    #         for value in values:
-    #             writer.writerow([str(mapping[key]) + '|' + value])
 
 
 def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold):
@@ -146,19 +133,6 @@ def make_index(soup, index_dictionary):
     index_dictionary[title] = sidebar
 
  
-    # index_dictionary = index_dictionary.update({title:{'website', 'location'}})
-#finish matching key=title to keys of location, website, criteria of the program, etc.
-
-#is the soup right?
-    # return index_dictionary
-        # subtags = util.find_sequence(tag)
-        # #definitely still in progress
-        # if subtags:
-        #     for subtag in subtags:
-        #         seq_words, seq_id = pull_values(subtag)
-        #         index_dictionary[seq_id] = seq_words|name
-        #         #union/combination of sets
-
 
 def pull_values(tag):
     '''
@@ -188,16 +162,4 @@ def pull_values(tag):
         values.append(value)
     return (name, values)
     # if numbers need to be integer, then would be integer
-
-
-    # title_and_desc = title_tag[0].text + desc_tag[0].text
-    # course_title = title_and_desc.replace(u"\xa0",u" ")
-    # course_id = course_title[0:10]
-    # course_title = course_title.lower()
-    # names_txt = re.findall('[a-z][a-z0-9]*', course_title)
-    # names = set()
-    # for name in names_txt:
-    #     if name not in INDEX_IGNORE:
-    #         names.add(name)
-    # return (names, values_txt) #problem is they aren't linked right now
 
