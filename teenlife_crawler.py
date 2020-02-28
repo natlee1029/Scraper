@@ -24,13 +24,18 @@ def crawler():
     page_parser_q.put(starting_url)
     while page_parser_q.empty() == False and numpages <= threshold:
         link = page_parser_q.get()
-        print(link)
         mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
-        #make_index(pull_info_q, index_dictionary)
         numpages += 1
 
+    while pull_info_q.empty() == False:
+    	page_link = pull_info_q.get()
+    	request = util.get_request(page_link)
+    	html = util.read_requestSSS(request)
+    	soup = bs4.BeautifulSoup(html, features="html5lib")
+    	make_index(soup, index_dictionary)
 
-    print(list(pull_info_q.queue))
+    print(index_dictionary)
+
     # with open(course_map_filename, 'r') as f:
     #     mapping = json.load(f)
     # with open(index_filename, 'w', newline='') as csvfile:
@@ -99,7 +104,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
         links_visited.append(post_url) 
 
 
-def make_index(pull_info_q, index_dictionary):
+def make_index(soup, index_dictionary):
     '''
     Adds words 
 
