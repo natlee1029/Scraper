@@ -14,7 +14,7 @@ def crawler():
     parsing_default_domain = "https://www.teenlife.com/search"
     info_default_domain = "https://www.teenlife.com"
 
-    threshold = 10
+    threshold = 1
     numpages = 0
     links_visited = []
     index_dictionary = {}
@@ -26,13 +26,19 @@ def crawler():
         link = page_parser_q.get()
         mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
         numpages += 1
-
+        print(link, "link")
     while pull_info_q.empty() == False:
-    	page_link = pull_info_q.get()
-    	request = util.get_request(page_link)
-    	html = util.read_requestSSS(request)
-    	soup = bs4.BeautifulSoup(html, features="html5lib")
-    	make_index(soup, index_dictionary)
+        page_link = pull_info_q.get()
+        print(page_link, "page_link")
+        request = util.get_request(page_link)
+        html = util.read_request(request)
+        soup = bs4.BeautifulSoup(html, features="html5lib")
+        make_index(soup, index_dictionary)
+    # with open(index_filename, 'w', newline='') as csvfile:
+    #     writer = csv.writer(csvfile)
+    #     for key,values in index_dictionary.items():
+    #         for value in values:
+    #             writer.writerow([str(mapping[key]) + '|' + value])
 
     print(index_dictionary)
 
@@ -114,20 +120,26 @@ def make_index(soup, index_dictionary):
     '''
 
     #iterate through the q delete the links as you go
+    sidebar = {}
     tags = soup.find_all("div", class_ = "row field")
+    for tag in tags:
+        name, value = pull_values(tag)
+        sidebar[name] = value
+    location = soup.find_all("div", itemprop="location")  
+    if location != []:
+        location = location[0].text
+        location = re.sub(r'[^\w\s]','',location).lower()    
+        sidebar['location'] = location
+    link = soup.find_all("div", id="website_link")
+    href = link[0].a.get("href")
+    sidebar['website'] = href
     title = soup.find_all("title")
     title = title[0].text
     title = re.sub(r'[^\w\s]','',title).lower()
-    link = soup.find_all("div", id="website_link")
-    href = link[0].a.get("href")
-    index_dictionary[title]['website'] = href  
-    location = soup.find_all("div", itemprop="location")  
-    location = location.text
-    location = re.sub(r'[^\w\s]','',location).lower()    
-    index_dictionary[title]['location'] = location
-    for tag in tags:
-        name, value = pull_values(tag)
-        index_dictionary[title][name] = value
+    title = title.replace("\n", " ")
+    index_dictionary[title] = sidebar
+
+ 
     # index_dictionary = index_dictionary.update({title:{'website', 'location'}})
 #finish matching key=title to keys of location, website, criteria of the program, etc.
 
@@ -165,7 +177,8 @@ def pull_values(tag):
     values = []
     for value in actual_tag:
         value = value.text
-        value = re.sub(r'[^\w\s]','',value).lower()        
+        value = re.sub(r'[^\w\s]','',value).lower()   
+        value = value.strip()     
         values.append(value)
     return (name, values)
     # if numbers need to be integer, then would be integer
