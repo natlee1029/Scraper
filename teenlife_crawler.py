@@ -5,6 +5,7 @@ import queue
 import json
 import sys
 import csv
+import pandas as pd
 
 
 def crawler():
@@ -14,7 +15,8 @@ def crawler():
     parsing_default_domain = "https://www.teenlife.com/search"
     info_default_domain = "https://www.teenlife.com"
 
-    threshold = 1
+    threshold = 5
+    page_threshold = 1
     numpages = 0
     links_visited = []
     index_dictionary = {}
@@ -22,11 +24,12 @@ def crawler():
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
-    while page_parser_q.empty() == False and numpages <= threshold:
+    while page_parser_q.empty() == False and numpages <= page_threshold:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold)
         numpages += 1
         print(link, "link")
+
     while pull_info_q.empty() == False:
         page_link = pull_info_q.get()
         print(page_link, "page_link")
@@ -34,13 +37,16 @@ def crawler():
         html = util.read_request(request)
         soup = bs4.BeautifulSoup(html, features="html5lib")
         make_index(soup, index_dictionary)
+
+    df = pd.DataFrame(index_dictionary)
+    df = df.transpose()
+    display(df)
+    print(list(df.columns))
     # with open(index_filename, 'w', newline='') as csvfile:
     #     writer = csv.writer(csvfile)
     #     for key,values in index_dictionary.items():
     #         for value in values:
     #             writer.writerow([str(mapping[key]) + '|' + value])
-
-    print(index_dictionary)
 
     # with open(course_map_filename, 'r') as f:
     #     mapping = json.load(f)
@@ -51,7 +57,7 @@ def crawler():
     #             writer.writerow([str(mapping[key]) + '|' + value])
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of 
     words with associated course identifier.
@@ -73,7 +79,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         return
     html = util.read_request(request)
     soup = bs4.BeautifulSoup(html, features="html5lib")
-    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain)
+    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain, threshold)
     tag_list = soup.find_all("ul", attrs = {"class": "pagination"})
     current_page = tag_list[0].find_all("li", attrs = {"class": "current"})
     next_page = current_page[0].next_sibling.next_sibling.findChild()
@@ -83,7 +89,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
 
 
 
-def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain):
+def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain, threshold):
     '''
     Adds links to be visited to the queue 'q' and adds links visited to the list
     'links_visited.'
@@ -103,7 +109,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
         possible_link = info_default_domain + possible_link
         actual_link = util.convert_if_relative_url(post_url, possible_link)
         if actual_link is not None and actual_link not in links_visited:
-            if util.is_url_ok_to_follow(actual_link, limiting_domain):
+            if util.is_url_ok_to_follow(actual_link, limiting_domain) and pull_info_q.qsize() <= threshold:
                 pull_info_q.put(actual_link)
     links_visited.append(url)
     if post_url != url:
@@ -195,35 +201,3 @@ def pull_values(tag):
     #         names.add(name)
     # return (names, values_txt) #problem is they aren't linked right now
 
-# def go(num_pages_to_crawl, course_map_filename, index_filename):
-#     '''
-#     Crawl the college catalog and generate a CSV file with an index.
-
-#     Inputs:
-#         num_pages_to_crawl: the number of pages to process during the crawl
-#         course_map_filename: the name of a JSON file that contains the mapping of
-#           course codes to course identifiers
-#         index_filename: the name for the CSV of the index.
-
-#     Outputs:
-#         CSV file of the index
-#     '''
-#     starting_url = ("http://www.classes.cs.uchicago.edu/archive/2015/winter"
-#                     "/12200-1/new.collegecatalog.uchicago.edu/index.html")
-#     limiting_domain = "classes.cs.uchicago.edu"
-#     links_visited = []
-#     index_dictionary = {}
-#     pages_crawled = 0
-#     q = queue.Queue()
-#     q.put(starting_url)
-#     while q.empty() == False and pages_crawled < num_pages_to_crawl:
-#         link = q.get()
-#         mini_crawler(link, q, links_visited, limiting_domain, index_dictionary)
-#         pages_crawled += 1
-#     with open(course_map_filename, 'r') as f:
-#         mapping = json.load(f)
-#     with open(index_filename, 'w', newline='') as csvfile:
-#         writer = csv.writer(csvfile)
-#         for key,values in index_dictionary.items():
-#             for value in values:
-#                 writer.writerow([str(mapping[key]) + '|' + value])
