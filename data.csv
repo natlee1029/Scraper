@@ -1,0 +1,60 @@
+|ages|application deadline|application fee|category|destinations|location|minimum cost|website
+0|['15', '16', '17', '18', '19']|0|0|stem|0|seal harbor me|2790|https://www.acadiainstitute.com/marine-science-camps/advanced-marine-science-camp-program?utm_source=teenlife
+1|['14', '15', '16', '17', '18']|0|0|academic|0|washington dc|800|https://www.american.edu/soc/discover/?utm_source=teenlife
+2|['16', '17', '18']|4302019|75|businessentrepreneurship|0|waltham ma|1299|https://www.bentley.edu/centers/trading-room/wall-street-101?utm_source=teenlife
+3|['12', '13', '14', '15', '16', '17', '18']|0|0|jewish|0|malibu ca|1650|https://www.wbtcamps.org/?utm_source=teenlife
+4|['12', '13', '14', '15', '16', '17', '18']|0|0|academic|0|evanston il|2335|http://ctd.northwestern.edu/summer?utm_source=teenlife
+5|['12', '13', '14', '15']|6142017|0|arts|0|bloomfield hills mi|640|https://cranbrookartmuseum.org/learn/kids-teens/create-camps/?utm_source=teenlife
+6|['14', '15', '16', '17']|5162018|300|stem|0|durham nc|1600|http://learnmore.duke.edu/youth/math_hs?utm_source=teenlife
+7|['12', '13', '14']|5162018|300|arts|0|durham nc|1600|http://learnmore.duke.edu/youth/video-production-camp-middle-school?utm_source=teenlife
+8|['13', '14', '15']|0|290|language|germany|münchen germany|1500|https://www.ef.edu/ils/destinations/germany/munich?source=007934,N1US_TRA_teenlife
+9|['18', '19', '19']|0|0|arts|['china', 'france', 'italy', 'multiple locations', 'spain', 'united kingdom', 'united states']|london united kingdom|950|https://www.fashionweekinternships.com?utm_source=teenlife
+10|0|0|50|academic|0|washington dc|6358|https://summer.georgetown.edu/?utm_medium=display&utm_source=teenlife&utm_campaign=fy19-160-shs-display-teenlife-1x1-visit&utm_content=fy19-160-shs-display-teenlife-1x1-visit
+11|0|0|50|stem|0|washington dc|2950|https://summer.georgetown.edu/?utm_medium=display&utm_source=teenlife&utm_campaign=fy19-160-shs-display-teenlife-1x1-visit&utm_content=fy19-160-shs-display-teenlife-1x1-visit
+12|['13', '14', '15', '16', '17', '18']|0|0|outdoor adventure|hawaii|honokaa hi|3495|http://www.hawaiioutdoors.org?utm_source=teenlife
+13|['16', '17', '18', '19']|0|290|language|france|paris france|1550|https://www.ef.edu/ils/destinations/france/paris/?source=007934,N1US_TRA_teenlife
+14|['16', '17', '18', '19']|0|290|language|france|nice france|715|https://www.ef.edu/ils/destinations/france/nice/?source=007934,N1US_TRA_teenlife
+15|['16', '17', '18', '19']|0|0|language|germany|berlin germany|1600|https://www.ef.edu/ils/destinations/germany/berlin/?source=007934,N1US_TRA_teenlife
+16|['16', '17', '18', '19']|0|0|language|germany|munich germany|1600|https://www.ef.edu/ils/destinations/germany/munich/?source=007934,N1US_TRA_teenlife
+17|['16', '17', '18', '19']|0|0|language|italy|rome italy|1600|https://www.ef.edu/ils/destinations/italy/rome/?source=007934,N1US_TRA_teenlife
+18|['16', '17', '18', '19']|0|0|language|japan|tokyo japan|1790|https://www.ef.edu/ils/destinations/japan/tokyo/?source=007934,N1US_TRA_teenlife
+19|['16', '17', '18', '19']|0|0|language|korea|seoul korea|1390|https://www.ef.edu/ils/destinations/korea/seoul/?source=007934,N1US_TRA_teenlife
+20|['16', '17', '18', '19', '19']|0|290|language|portugal|lisbon portugal|645|https://www.ef.edu/ils/destinations/portugal/lisbon/?source=007934,N1US_TRA_teenlife
+21|['16', '17', '18', '19']|0|0|language|spain|barcelona spain|1450|https://www.ef.edu/ils/destinations/spain/barcelona/?source=007934,N1US_TRA_teenlife
+22|['16', '17', '18', '19']|0|0|language|costa rica|playa tamarindo costa rica|1330|https://www.ef.edu/ils/destinations/costa-rica/playa-tamarindo/?source=007934,N1US_TRA_teenlife
+23|['16', '17', '18', '19']|0|290|language|spain|madrid spain|1190|https://www.ef.edu/ils/destinations/spain/madrid/?source=007934,N1US_TRA_teenlife
+24|['14', '15', '16', '17', '18', '19', '19']|7062018|0|arts|united states|new york ny|200|https://www.limcollege.edu/admissions/high-school-special-programs/summer-fashion-lab?utm_source=teenlife
+25|['14', '15', '16', '17', '18']|0|0|travelcultural immersion|spain|spain|5950|http://experiencelita.com?utm_source=teenlife
+26|['14', '15', '16', '17', '18']|3152020|60|academic|united states|los angeles ca|4800|http://summer.lmu.edu/campaigns?utm_source=teenlife
+27|['15', '16', '17', '18']|3152020|60|arts|united states|los angeles ca|4800|https://summer.lmu.edu/comics?utm_source=teenlife
+28|['17', '18']|3152020|60|arts|0|los angeles ca|4800|http://summer.lmu.edu/design?utm_source=teenlife
+29|['15', '16', '17', '18']|3152020|60|businessentrepreneurship|united states|los angeles ca|4800|https://summer.lmu.edu/entrepreneurship?utm_source=teenlife
+30|['16', '17', '18']|3152020|60|arts|united states|los angeles ca|4800|https://summer.lmu.edu/graphicdesign?utm_source=teenlife
+31|['16', '17', '18']|3152019|60|arts|0|los angeles ca|4800|http://summer.lmu.edu/3dart?utm_source=teenlife
+32|['12', '13', '14', '15', '16']|0|0|arts|0|waterville me|3940|https://maineartscamp.com/?utm_source=teenlife
+33|['12', '13', '14', '15', '16']|0|0|sports|0|new york ny|570|http://www.manhattanfencing.com?utm_source=teenlife
+34|['13', '14', '15', '16', '17', '18']|6192020|395|language|['china', 'france', 'spain', 'united states']|colchester vt|5595|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+35|['14', '15', '16', '17', '18']|5012020|395|language|china|beijing china|6995|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+36|['14', '15', '16', '17', '18']|5012020|395|language|spain|granada spain|6995|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+37|['14', '15', '16', '17', '18']|5012020|395|language|france|nantes france|7245|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+38|['14', '15', '16', '17', '18']|5012020|395|language|spain|salamanca spain|6995|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+39|['13', '14', '15', '16', '17', '18']|6192020|395|language|united states|colchester vt|5595|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+40|['13', '14', '15', '16', '17', '18']|6192020|395|language|united states|colchester vt|5595|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+41|['13', '14', '15', '16', '17', '18']|6192020|395|language|united states|colchester vt|5595|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+42|['13', '14', '15', '16', '17', '18']|6192020|395|language|united states|colchester vt|5595|http://www.middleburyinteractive.com/summer-language-academy-teens-2?utm_leadsource=TeenLife&utm_medium=listing&utm_source=TeenLife
+43|['14', '15', '16', '17']|0|0|career exploration and leadership|0|0|2595|https://www.nslcleaders.org/youth-leadership-programs/leadership-development-programs/?utm_source=teenlife
+44|['12', '13', '14', '15', '16', '17', '18', '19', '19']|0|350|travelcultural immersion|['australia', 'austria', 'belgium', 'cambodia', 'china', 'costa rica', 'croatia', 'czech republic', 'egypt', 'estonia', 'fiji', 'france', 'germany', 'greece', 'hungary', 'iceland', 'ireland', 'italy', 'japan', 'multiple locations', 'netherlands', 'new zealand', 'poland', 'scotland', 'south africa', 'spain', 'switzerland', 'united kingdom', 'united states', 'vietnam', 'wales']|newburyport ma|3500|https://www.peopletopeople.com?utm_source=teenlife
+45|['15', '16', '17', '18']|3152020|60|academic|0|los angeles ca|4800|http://summer.lmu.edu?utm_source=teenlife
+46|['12', '13', '14', '15']|5012020|0|outdoor adventure|0|brevard nc|3900|https://www.rockbrookcamp.com/?utm_source=teenlife
+47|['14', '15', '16', '17', '18']|5012019|0|language|argentina|0|2795|http://www.solabroad.com/programs/argentina/argentina.html?utm_source=teenlife
+48|['15', '16', '17', '18']|3162020|50|academic|0|new york ny|4995|https://www.sothebysinstitute.com/nyc-summer-institute/courses/art-luxury-fashion?utm_source=teenlife
+49|['15', '16', '17', '18']|0|0|stem|0|stanford ca|0|http://smysp.stanford.edu/?utm_source=teenlife
+50|['13', '14', '15', '16', '17']|0|65|academic|0|stanford ca|7500|https://summerinstitutes.spcs.stanford.edu?utm_source=teenlife
+51|['17', '18', '19', '19']|0|120|community service|['argentina', 'belize', 'cambodia', 'cameroon', 'chile', 'china', 'colombia', 'costa rica', 'ecuador', 'galapagos islands', 'ghana', 'guatemala', 'honduras', 'india', 'kenya', 'mongolia', 'multiple locations', 'nepal', 'peru', 'rwanda', 'south africa', 'sri lanka', 'tanzania', 'uganda', 'vietnam', 'zambia']|elkins park pa|745|https://www.abroaderview.org?utm_source=teenlife
+52|['15', '16', '17', '18']|3162020|50|academic|united states|washington dc|5225|https://www.nytedu.com/courses/pre-college/photojournalism/?utm_source=teenlife
+53|['15', '16', '17', '18']|0|100|travelcultural immersion|['france', 'spain']|multiple locations multiple locations|3495|http://www.go.travelforteens.com/VVTLBPWebsite?utm_source=teenlife
+54|['15', '16', '17', '18']|5012018|100|travelcultural immersion|china|multiple locations multiple locations|4895|http://www.go.travelforteens.com/VVTLCHWebsite?utm_source=teenlife
+55|['14', '15', '16', '17']|0|35|academic|united states|amherst ma|3145|http://www.umass.edu/summer/programs/academic-programs/human-health-and-movement-kinesiology?utm_source=teenlife
+56|['15', '16', '17']|0|50|businessentrepreneurship|0|college park md|3500|http://go.umd.edu/SEBP?utm_source=teenlife
+57|['12', '13', '14', '15', '16', '17', '18', '19', '19']|4142016|120|community service|belize|near belize city belize|895|https://www.abroaderview.org/volunteers/belize?utm_source=teenlife
+58|['12', '13', '14', '15', '16', '17', '18', '19', '19']|4142015|120|travelcultural immersion|guatemala|elkins park pa|775|https://www.abroaderview.org/programs/orphanage-support/guatemala-orphanage-xela?utm_source=teenlife
