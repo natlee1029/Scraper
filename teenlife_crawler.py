@@ -32,9 +32,10 @@ def crawler():
         page_link = pull_info_q.get()
         print(page_link, "page_link")
         request = util.get_request(page_link)
-        html = util.read_request(request)
-        soup = bs4.BeautifulSoup(html, features="html5lib")
-        make_index(soup, index_dictionary)
+        if request is not None:
+	        html = util.read_request(request)
+	        soup = bs4.BeautifulSoup(html, features="html5lib")
+	        make_index(soup, index_dictionary)
 
     df = pd.DataFrame(index_dictionary)
     df = df.transpose()
