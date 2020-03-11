@@ -5,6 +5,7 @@ import queue
 import json
 import sys
 import csv
+import pandas as pd
 
 
 def crawler():
@@ -14,7 +15,8 @@ def crawler():
     parsing_default_domain = "https://www.teenlife.com/search"
     info_default_domain = "https://www.teenlife.com"
 
-    threshold = 10
+    threshold = 5
+    page_threshold = 1
     numpages = 0
     links_visited = []
     index_dictionary = {}
@@ -22,30 +24,27 @@ def crawler():
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
-    while page_parser_q.empty() == False and numpages <= threshold:
+    while page_parser_q.empty() == False and numpages <= page_threshold:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold)
         numpages += 1
+        print(link, "link")
 
     while pull_info_q.empty() == False:
-    	page_link = pull_info_q.get()
-    	request = util.get_request(page_link)
-    	html = util.read_requestSSS(request)
-    	soup = bs4.BeautifulSoup(html, features="html5lib")
-    	make_index(soup, index_dictionary)
+        page_link = pull_info_q.get()
+        print(page_link, "page_link")
+        request = util.get_request(page_link)
+        html = util.read_request(request)
+        soup = bs4.BeautifulSoup(html, features="html5lib")
+        make_index(soup, index_dictionary)
 
-    print(index_dictionary)
-
-    # with open(course_map_filename, 'r') as f:
-    #     mapping = json.load(f)
-    # with open(index_filename, 'w', newline='') as csvfile:
-    #     writer = csv.writer(csvfile)
-    #     for key,values in index_dictionary.items():
-    #         for value in values:
-    #             writer.writerow([str(mapping[key]) + '|' + value])
+    df = pd.DataFrame(index_dictionary)
+    df = df.transpose()
+    display(df)
+    print(list(df.columns))
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of 
     words with associated course identifier.
@@ -67,7 +66,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         return
     html = util.read_request(request)
     soup = bs4.BeautifulSoup(html, features="html5lib")
-    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain)
+    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain, threshold)
     tag_list = soup.find_all("ul", attrs = {"class": "pagination"})
     current_page = tag_list[0].find_all("li", attrs = {"class": "current"})
     next_page = current_page[0].next_sibling.next_sibling.findChild()
@@ -77,7 +76,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
 
 
 
-def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain):
+def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain, threshold):
     '''
     Adds links to be visited to the queue 'q' and adds links visited to the list
     'links_visited.'
@@ -97,7 +96,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
         possible_link = info_default_domain + possible_link
         actual_link = util.convert_if_relative_url(post_url, possible_link)
         if actual_link is not None and actual_link not in links_visited:
-            if util.is_url_ok_to_follow(actual_link, limiting_domain):
+            if util.is_url_ok_to_follow(actual_link, limiting_domain) and pull_info_q.qsize() <= threshold:
                 pull_info_q.put(actual_link)
     links_visited.append(url)
     if post_url != url:
@@ -114,34 +113,26 @@ def make_index(soup, index_dictionary):
     '''
 
     #iterate through the q delete the links as you go
+    sidebar = {}
     tags = soup.find_all("div", class_ = "row field")
+    for tag in tags:
+        name, value = pull_values(tag)
+        sidebar[name] = value
+    location = soup.find_all("div", itemprop="location")  
+    if location != []:
+        location = location[0].text
+        location = re.sub(r'[^\w\s]','',location).lower()    
+        sidebar['location'] = location
+    link = soup.find_all("div", id="website_link")
+    href = link[0].a.get("href")
+    sidebar['website'] = href
     title = soup.find_all("title")
     title = title[0].text
     title = re.sub(r'[^\w\s]','',title).lower()
-    index_dictionary['title'] = title 
-    link = soup.find_all("div", id="website_link")
-    href = link[0].a.get("href")
-    index_dictionary['title'][title]['website'] = href  
-    location = soup.find_all("div", itemprop="location")  
-    location = location.text
-    location = re.sub(r'[^\w\s]','',location).lower()    
-    index_dictionary['title'][title]['location'] = location
-    for tag in tags:
-        name, value = pull_values(tag)
-        index_dictionary[title][name] = value
-    index_dictionary = index_dictionary.update({title:{'website', 'location'}})
-#finish matching key=title to keys of location, website, criteria of the program, etc.
+    title = title.replace("\n", " ")
+    index_dictionary[title] = sidebar
 
-#is the soup right?
-    # return index_dictionary
-        # subtags = util.find_sequence(tag)
-        # #definitely still in progress
-        # if subtags:
-        #     for subtag in subtags:
-        #         seq_words, seq_id = pull_values(subtag)
-        #         index_dictionary[seq_id] = seq_words|name
-        #         #union/combination of sets
-
+ 
 
 def pull_values(tag):
     '''
@@ -166,19 +157,9 @@ def pull_values(tag):
     values = []
     for value in actual_tag:
         value = value.text
-        value = re.sub(r'[^\w\s]','',value).lower()        
+        value = re.sub(r'[^\w\s]','',value).lower()   
+        value = value.strip()     
         values.append(value)
     return (name, values)
     # if numbers need to be integer, then would be integer
 
-
-    # title_and_desc = title_tag[0].text + desc_tag[0].text
-    # course_title = title_and_desc.replace(u"\xa0",u" ")
-    # course_id = course_title[0:10]
-    # course_title = course_title.lower()
-    # names_txt = re.findall('[a-z][a-z0-9]*', course_title)
-    # names = set()
-    # for name in names_txt:
-    #     if name not in INDEX_IGNORE:
-    #         names.add(name)
-    # return (names, values_txt) #problem is they aren't linked right now
