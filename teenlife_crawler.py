@@ -22,7 +22,7 @@ def crawler():
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
-    while page_parser_q.empty() == False:
+    while page_parser_q.empty() == False and numpages <= 20:
         link = page_parser_q.get()
         mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
         numpages += 1
