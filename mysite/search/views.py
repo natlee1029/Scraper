@@ -58,9 +58,8 @@ def _build_dropdown(options):
     """Convert a list to (value, caption) tuples."""
     return [(x, x) if x is not None else ('', NOPREF_STR) for x in options]
 
-
-DURATION = _build_dropdown([None] + _load_res_column('')) #add appropriate csv file in the string later
-LOCATION = _build_dropdown([None] + _load_res_column('')) #add appropriate csv file in the string later
+LOCATION = _build_dropdown([None] + _load_res_column('location.csv')) #add appropriate csv file in the string later
+SUBJECT = _build_dropdown([None] + _load_res_column('subject.csv')) #add appropriate csv file in the string later
 
 class IntegerRange(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
@@ -150,7 +149,7 @@ class SearchForm(forms.Form):
         help_text='e.g. 12-15',
         widget=RANGE_WIDGET,
         required=False)
-    duration = forms.ChoiceField(label = "Duration", choices = DURATION, required = False)
+    
     location = forms.ChoiceField(label = "Location", choices = LOCATION, required = False)
     subject = forms.ChoiceField(label = "Subject", choices = SUBJECT, required = False)
 
