@@ -22,9 +22,9 @@ def crawler():
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
-    while page_parser_q.empty() == False and numpages <= 20:
+    while page_parser_q.empty() == False and numpages <= 15:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
         numpages += 1
         print(link, "link")
 
@@ -39,11 +39,11 @@ def crawler():
 
     df = pd.DataFrame(index_dictionary)
 
-    return data_scraping.write_to_csv(df)
+    return data_scraping.write_to_csv(df, './demo_cata.csv')
 
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of
     words with associated course identifier.

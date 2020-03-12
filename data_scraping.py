@@ -29,6 +29,6 @@ def clean_data(df):
 		df.at[index, 'destinations'] = destination
 	return df
 
-def write_to_csv(df):
+def write_to_csv(df, file_path):
 	df = clean_data(df)
-	df.to_csv('./data.csv', sep = '|')
+	df.to_csv(file_path, sep = '|')
