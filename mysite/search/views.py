@@ -213,9 +213,7 @@ def home(request):
         result = None
     elif not _valid_result(res):
         context['result'] = None
-        context['err'] = ('Return of find_courses has the wrong data type. '
-                          'Should be a tuple of length 4 with one string and '
-                          'three lists.')
+        context['err'] = ('Wrong Output')
     else:
         columns, result = res
 
