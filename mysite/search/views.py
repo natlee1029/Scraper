@@ -10,12 +10,12 @@ from operator import and_
 from django.shortcuts import render
 from django import forms
 
-from summer import find_listings
+from summer import demo
 
 NOPREF_STR = 'No preference'
-RES_DIR = os.path.join(os.path.dirname(__file__), '..', 'res')
+RES_DIR = os.path.join(os.path.dirname(__file__), 'res')
 COLUMN_NAMES = dict(
-    dept='Department',
+    age ='Age',
     course_num='Course',
     section_num='Section',
     day='Day',
@@ -80,7 +80,7 @@ class FloatRange(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         fields = (forms.FloatField(),
                   forms.FloatField())
-        super(IntegerRange, self).__init__(fields=fields,
+        super(FloatRange, self).__init__(fields=fields,
                                            *args, **kwargs)
 
     def compress(self, data_list):
@@ -93,7 +93,7 @@ class FloatRange(forms.MultiValueField):
 
 class CostRange(FloatRange):
     def compress(self, data_list):
-        super(EnrollmentRange, self).compress(data_list)
+        super(CostRange, self).compress(data_list)
         for v in data_list:
             if not 1 <= v <= 20000:
                 raise forms.ValidationError(
@@ -106,7 +106,7 @@ class CostRange(FloatRange):
 
 class AgeRange(IntegerRange):
     def compress(self, data_list):
-        super(TimeRange, self).compress(data_list)
+        super(AgeRange, self).compress(data_list)
         for v in data_list:
             if not 1 <= v <= 21:
                 raise forms.ValidationError(
@@ -119,7 +119,7 @@ class AgeRange(IntegerRange):
 
 class DateRange(IntegerRange):
     def compress(self, data_list):
-        super(TimeRange, self).compress(data_list)
+        super(DateRange, self).compress(data_list)
         for v in data_list:
             if not 1 <= v <= 21:
                 raise forms.ValidationError(
@@ -176,10 +176,6 @@ def home(request):
                 args['age_lower'] = age[0]
                 args['age_upper'] = age[1]
 
-            duration = form.cleaned_data['duration'] #change based on the dictionary input columns
-            if duration:
-                args['duration'] = duration
-            
             location = form.cleaned_data['location']
             if location:
                 args['location'] = location
@@ -190,7 +186,7 @@ def home(request):
 
 
             try:
-                res = find_courses(args)
+                res = demo(args)
             except Exception as e:
                 print('Exception caught')
                 bt = traceback.format_exception(*sys.exc_info()[:3])
@@ -213,7 +209,7 @@ def home(request):
         result = None
     elif not _valid_result(res):
         context['result'] = None
-        context['err'] = ('Wrong Output')
+        context['err'] = ('Wrong output structure')
     else:
         columns, result = res
 
