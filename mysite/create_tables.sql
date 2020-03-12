@@ -6,7 +6,6 @@ CREATE TABLE program_info (
    subject varchar(50),
    country varchar(20),
    city varchar(30),
-   minimum_cost integer,
    program_url varchar(350)
 );
 

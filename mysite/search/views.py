@@ -10,7 +10,7 @@ from operator import and_
 from django.shortcuts import render
 from django import forms
 
-from summer import demo
+import summer
 
 NOPREF_STR = 'No preference'
 RES_DIR = os.path.join(os.path.dirname(__file__), 'res')
@@ -186,7 +186,7 @@ def home(request):
 
 
             try:
-                res = demo(args)
+                res = summer.demo(summer.DATABASE_FILENAME, summer.demo_string2, summer.demo_arg2)
             except Exception as e:
                 print('Exception caught')
                 bt = traceback.format_exception(*sys.exc_info()[:3])
