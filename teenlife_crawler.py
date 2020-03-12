@@ -6,7 +6,7 @@ import json
 import sys
 import csv
 import pandas as pd
-
+import data_scraping
 
 def crawler():
     # starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
@@ -24,7 +24,7 @@ def crawler():
     page_parser_q.put(starting_url)
     while page_parser_q.empty() == False and numpages <= 20:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold)
         numpages += 1
         print(link, "link")
 
@@ -38,15 +38,12 @@ def crawler():
 	        make_index(soup, index_dictionary)
 
     df = pd.DataFrame(index_dictionary)
-    df = df.transpose()
-    df = df.set_index(pd.Index(list(range(len(df)))))
-    return df.to_csv('./data.csv', sep = '|', na_rep = 0, columns = ['ages', 'application deadline', 'application fee',
-    													   			 'category', 'destinations', 'location', 'minimum cost',
-    													   			 'website'])
+
+    return data_scraping.write_to_csv(df)
 
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain, threshold):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of
     words with associated course identifier.

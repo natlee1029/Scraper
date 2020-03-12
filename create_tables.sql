@@ -1,28 +1,12 @@
 CREATE TABLE program_info
-  (program_url varchar(10),
-   lastname varchar(50),
-   firstname varchar(50),
-   party varchar(6),
-   city varchar(20),
-   state varchar(2),
-   zip integer,
-   cand_id varchar(10),
-   district varchar(2),
-   constraint pk_candidate primary key (committee_id));
-
-.separator ","
-.import candidate.csv candidate
+  (ages varchar(17),
+   deadline integer,
+   fee integer,
+   subject varchar(50),
+   country varchar(20),
+   city varchar(30),
+   minimum_cost integer,
+   program_url varchar(350);
 
 
-CREATE TABLE contribution
-  (cand_id varchar(10),
-   amount integer,
-   city varchar(20),
-   state varchar(10),
-   zip integer,
-   month integer,
-   year integer,
-   constraint fk_contribution foreign key (cand_id)
-    references candidate (cand_id));
-
-.import contributions.csv contribution
+.import data.csv program_info
