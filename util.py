@@ -92,6 +92,7 @@ def convert_if_relative_url(current_url, new_url):
         convert_if_relative_url("http://cs.uchicago.edu", "foo.edu/pa.html")
             yields 'http://foo.edu/pa.html'
     '''
+
     if new_url == "" or not is_absolute_url(current_url):
         return None
 

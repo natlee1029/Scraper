@@ -10,9 +10,8 @@ import data_scraping
 def crawler():
     # starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
     starting_url = "https://www.summerdiscovery.com/finder?location=&grade=&length="
-    limiting_domain = "teenlife.com"
-    parsing_default_domain = "https://www.teenlife.com/search"
-    info_default_domain = "https://www.teenlife.com"
+    limiting_domain = "www.summerdiscovery.com"
+    parsing_default_domain = "https://www.summerdiscovery.com/"
 
     numpages = 0
     links_visited = []
@@ -21,27 +20,18 @@ def crawler():
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
-    while page_parser_q.empty() == False and numpages <= 10:
+    while page_parser_q.empty() == False:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain)
         numpages += 1
-        print(link, "link")
 
-    while pull_info_q.empty() == False:
-        page_link = pull_info_q.get()
-        print(page_link, "page_link")
-        request = util.get_request(page_link)
-        if request is not None:
-            html = util.read_request(request)
-            soup = bs4.BeautifulSoup(html, features="html5lib")
-            make_index(soup, index_dictionary)
 
     df = pd.DataFrame(index_dictionary)
 
     return data_scraping.write_to_csv(df, './demo_cata.csv')
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of
     words with associated course identifier.
@@ -63,17 +53,11 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         return
     html = util.read_request(request)
     soup = bs4.BeautifulSoup(html, features="html5lib")
-    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain)
-    tag_list = soup.find_all("ul", attrs = {"class": "pagination"})
-    current_page = tag_list[0].find_all("li", attrs = {"class": "current"})
-    next_page = current_page[0].next_sibling.next_sibling.findChild()
-    next_page_href = next_page.get('href')
-    next_page_href = parsing_default_domain + next_page_href
-    page_parser_q.put(next_page_href)
+    find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, limiting_domain, parsing_default_domain)
 
 
 
-def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain):
+def find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, limiting_domain, parsing_default_domain):
     '''
     Adds links to be visited to the queue 'q' and adds links visited to the list
     'links_visited.'
@@ -86,12 +70,13 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
         links_visited: list of visited links
         limiting_domain: domain name
     '''
-    tag_list = soup.find_all("div", attrs = {"class":"search-listing-content"})
-    for tag in tag_list:
-        href_tag = tag.findChild()
-        possible_link = href_tag.get('href')
-        possible_link = info_default_domain + possible_link
+    tag_list = soup.find_all("div", attrs = {"class": "program_listing"})
+    link_list = tag_list[0].find_all('li', {"class": "revealer"})
+    for link in link_list:
+        possible_link = link.findChild().get("href")
+        # possible_link = parsing_default_domain + possible_link
         actual_link = util.convert_if_relative_url(post_url, possible_link)
+        print(actual_link)
         if actual_link is not None and actual_link not in links_visited:
             if util.is_url_ok_to_follow(actual_link, limiting_domain):
                 pull_info_q.put(actual_link)
