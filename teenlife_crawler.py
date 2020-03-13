@@ -129,7 +129,14 @@ def make_index(soup, index_dictionary):
     title = re.sub(r'[^\w\s]','',title).lower()
     title = title.replace("\n", " ")
     index_dictionary[title] = sidebar
-
+    description1 = soup.find_all("div", class_="listing-description")
+    description1 = description1[0].text.lower()
+    description1 = re.sub(r'[^\w\s]','',title).strip()
+    description2 = soup.find_all("div", class_="listing-more-info")
+    description2 = description2[0].text.lower()
+    description2 = re.sub(r'[^\w\s]','',title).strip()
+    description = description1 + description2
+    sidebar['description'] = description
 
 
 def pull_values(tag):
