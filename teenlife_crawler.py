@@ -10,9 +10,8 @@ import data_scraping
 def crawler():
     # starting_url = "https://www.teenlife.com/search/?q=None&l=None&c=Summer%20Program&p=1"
     starting_url = "https://www.teenlife.com/search?q=&l=&c=Summer%20Program&p=1"
-    limiting_domain = "teenlife.com"
+    limiting_domain = "www.teenlife.com"
     parsing_default_domain = "https://www.teenlife.com/search"
-    info_default_domain = "https://www.teenlife.com"
 
     numpages = 0
     links_visited = []
@@ -23,7 +22,7 @@ def crawler():
     page_parser_q.put(starting_url)
     while page_parser_q.empty() == False and numpages <= 10:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain)
         numpages += 1
         print(link, "link")
 
@@ -42,7 +41,7 @@ def crawler():
 
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain, info_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of
     words with associated course identifier.
@@ -64,17 +63,17 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         return
     html = util.read_request(request)
     soup = bs4.BeautifulSoup(html, features="html5lib")
-    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain)
+    find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain)
     tag_list = soup.find_all("ul", attrs = {"class": "pagination"})
     current_page = tag_list[0].find_all("li", attrs = {"class": "current"})
     next_page = current_page[0].next_sibling.next_sibling.findChild()
     next_page_href = next_page.get('href')
-    next_page_href = parsing_default_domain + next_page_href
+    next_page_href = util.convert_if_relative_url(post_url, next_page_href)
     page_parser_q.put(next_page_href)
 
 
 
-def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain, info_default_domain):
+def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain):
     '''
     Adds links to be visited to the queue 'q' and adds links visited to the list
     'links_visited.'
@@ -91,7 +90,6 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain,
     for tag in tag_list:
         href_tag = tag.findChild()
         possible_link = href_tag.get('href')
-        possible_link = info_default_domain + possible_link
         actual_link = util.convert_if_relative_url(post_url, possible_link)
         if actual_link is not None and actual_link not in links_visited:
             if util.is_url_ok_to_follow(actual_link, limiting_domain):
