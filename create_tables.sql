@@ -1,4 +1,4 @@
-CREATE TABLE program_info
+CREATE TABLE program_info;
   (ages varchar(17),
    deadline integer,
    fee integer,
@@ -9,4 +9,4 @@ CREATE TABLE program_info
    program_url varchar(350);
 
 
-.import data.csv program_info
+.import demo_cata.csv program_info
