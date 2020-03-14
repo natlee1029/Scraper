@@ -37,7 +37,7 @@ def crawler():
 
     df = pd.DataFrame(index_dictionary)
 
-    return data_scraping.write_to_csv(df, './demo_cata.csv')
+    return df
 
 
 

@@ -88,7 +88,7 @@ class FloatRange(forms.MultiValueField):
             raise forms.ValidationError('Must specify both lower and upper '
                                         'bound, or leave both blank.')
 
-        return data_list        
+        return data_list
 
 
 class CostRange(FloatRange):
@@ -149,7 +149,7 @@ class SearchForm(forms.Form):
         help_text='e.g. 12-15',
         widget=RANGE_WIDGET,
         required=False)
-    
+
     location = forms.ChoiceField(label = "Location", choices = LOCATION, required = False)
     subject = forms.ChoiceField(label = "Subject", choices = SUBJECT, required = False)
 
