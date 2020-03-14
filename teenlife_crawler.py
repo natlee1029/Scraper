@@ -15,14 +15,14 @@ def crawler():
 
     numpages = 0
     links_visited = []
-    index_dictionary = {}
+    index_list = {}
     pages_crawled = 0
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
     while page_parser_q.empty() == False and numpages <= 10:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list, parsing_default_domain)
         numpages += 1
         print(link, "link")
 
@@ -33,15 +33,16 @@ def crawler():
         if request is not None:
 	        html = util.read_request(request)
 	        soup = bs4.BeautifulSoup(html, features="html5lib")
-	        make_index(soup, index_dictionary)
+	        make_index(soup, index_list)
 
-    df = pd.DataFrame(index_dictionary)
+
+    df = pd.DataFrame(index_list)
 
     return df
 
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary, parsing_default_domain):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list, parsing_default_domain):
     '''
     Crawl the college catalog and adds to an index dictionary to map set of
     words with associated course identifier.
@@ -51,7 +52,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         q: queue of urls in line to be crawled
         links_visited: list of visited links
         limiting_domain: domain name
-        index_dictionary: dictionary that maps words to course identifiers
+        index_list: dictionary that maps words to course identifiers
     '''
     if url in links_visited:
         return
@@ -99,13 +100,13 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain)
         links_visited.append(post_url)
 
 
-def make_index(soup, index_dictionary):
+def make_index(soup, index_list):
     '''
     Adds words
 
     Inputs:
         soup: soup object from the text of the HTML document
-        index_dictionary: dictionary that maps words to course identifiers
+        index_list: dictionary that maps words to course identifiers
     '''
 
     #iterate through the q delete the links as you go
@@ -126,7 +127,7 @@ def make_index(soup, index_dictionary):
     title = title[0].text
     title = re.sub(r'[^\w\s]','',title).lower()
     title = title.replace("\n", " ")
-    index_dictionary[title] = sidebar
+    sidebar['title'] = title
     description1 = soup.find_all("div", class_="listing-description")
     description1 = description1[0].text.lower()
     description1 = re.sub(r'[^\w\s]','',title).strip()
@@ -135,6 +136,8 @@ def make_index(soup, index_dictionary):
     description2 = re.sub(r'[^\w\s]','',title).strip()
     description = description1 + description2
     sidebar['description'] = description
+    index_list.append(sidebar)
+
 
 
 def pull_values(tag):
@@ -165,5 +168,12 @@ def pull_values(tag):
         values.append(value)
     if len(values) == 1:
         values = values[0]
+    if name == 'entering grades':
+        grades = []
+        for grade in values:
+            grade = re.sub('[^0-9]','', grade)
+            grades.append(grade)
+        values = grades
+
     return (name, values)
     # if numbers need to be integer, then would be integer

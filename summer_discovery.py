@@ -1,4 +1,5 @@
 import re
+import requests
 import util
 import bs4
 import queue
@@ -81,64 +82,68 @@ def find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, l
         links_visited.append(post_url)
 
 
-# def make_index(soup, index_dictionary):
-#     '''
-#     Adds words
+def make_index(soup, index_list, link):
+    # link2 = "https://www.summerdiscovery.com/ucla/academic-options"
+    link2 = link + "/academic-options"
+    page2 = requests.get(link2)
+    soup2 = BeautifulSoup(page2.content, "html.parser")
 
-#     Inputs:
-#         soup: soup object from the text of the HTML document
-#         index_dictionary: dictionary that maps words to course identifiers
-#     '''
-
-#     #iterate through the q delete the links as you go
-#     sidebar = {}
-#     tags = soup.find_all("div", class_ = "row field")
-#     for tag in tags:
-#         name, value = pull_values(tag)
-#         sidebar[name] = value
-#     location = soup.find_all("div", itemprop="location")
-#     if location != []:
-#         location = location[0].text
-#         location = re.sub(r'[^\w\s]','',location).lower()
-#         sidebar['location'] = location
-#     link = soup.find_all("div", id="website_link")
-#     href = link[0].a.get("href")
-#     sidebar['website'] = href
-#     title = soup.find_all("title")
-#     title = title[0].text
-#     title = re.sub(r'[^\w\s]','',title).lower()
-#     title = title.replace("\n", " ")
-#     index_dictionary[title] = sidebar
+    courses = soup2.findAll("ul", {"class": "academics_pro"})
+    desc_dict = {}
+    for course in courses:
+        course_name = course.findAll("span", {"class": "academics_subjectName"})[0].text
+        course_name = ''.join([i for i in course_name if not i.isdigit()]).strip().lower()
+        if course_name not in desc_dict:
+            desc_dict[course_name] = ''
+        descriptions = course.findAll("span", {"class": "academics_courseBody"})
+        for description in descriptions:
+            desc = description.findAll("p")[0].text.lower()
+            old_desc = desc_dict[course_name]
+            desc_dict[course_name] = old_desc + ' ' + desc
 
 
+    # link = "https://www.summerdiscovery.com/ucla"
+    page = requests.get(link)
+    soup = BeautifulSoup(page.content, "html.parser")
+    all_camps = soup.findAll("span", {"class": "datesAndPrices"})
+    camps = all_camps[0].findAll("li")
 
-# def pull_values(tag):
-#     '''
-#     Creates a set of words and the associated course identifier.
+    program = soup.findAll("h3", {"class": "location_subPageSectionHeader"})
+    program = program[0].text.lower()
 
-#     Inputs:
-#         tag: div tag object from the soup object
+    location = soup.findAll("div", {"class": "locLocation_header"})
+    location = ''.join(location[0].text.lower().split(','))
+    age_grade = soup.findAll("span", class_="locHeader3")
+    age_grade = age_grade[0].text.lower()
+    rough_grades = re.search('grades(.+?)[(]', age_grade).group(1).split(",")
+    grades = []
+    for grade in rough_grades:
+        grade = grade.replace(' ', '')
+        grades.append(grade)
+    ages = re.search('[(](.+?)[)]', age_grade).group(1).replace('-',',')
+    ages = re.sub(r'[a-z]+', ' ', ages).strip(' ').split(',')
 
-#     Outputs:
-#         (words, course_id): (set of words tied to the course identifier,
-#         course identifier)
-#     '''
-#     #string with ascii values, can I replace 6 or 8 with *? using regex?
-#     #way to pull list of
-#     # name_tag = tag.find_all("div", class_="small-6 columns field-name") \d
-#     name_tag = tag.find_all("span", class_="field-name")
-#     name = name_tag[0].text
-#     name = re.sub(r'[^\w\s]','',name).lower()
-#     value_tags = tag.find_all("div", class_=re.compile(r'field-value'))
-#     # if len(values_tags) == 1:
-#     actual_tag = value_tags[0].find_all('span')
-#     values = []
-#     for value in actual_tag:
-#         value = value.text
-#         value = re.sub(r'[^\w\s]','',value).lower()
-#         value = value.strip()
-#         values.append(value)
-#     if len(values) == 1:
-#         values = values[0]
-#     return (name, values)
-#     # if numbers need to be integer, then would be integer
+    index_list = []
+    for camp in camps:
+        dct = {"ages": ages, "grades": grades, "location": location, "website": link}
+        tuition = camp.findAll("span", {"class": "dpTuition"})
+        tuition = ''.join(tuition[0].text.lower().split('$')[1].split(','))
+        dct["minimum cost"] = tuition
+        dates = camp.findAll("span", {"class": "dpHeader"})
+        dates = dates[0].text.lower()
+        dates = dates[:len(dates) - len(tuition) - 1]
+        start_date = dates.split('-')[0][:-1]
+        dct["session start"] = start_date
+        duration = camp.findAll("span", {"class": "dpDuration"})
+        prog = duration[0].text.split(' (')[0].lower()
+        dct["program"] = program + ' ' + prog 
+        dct["session length"] = ' '.join(duration[0].text.lower().split(' ')[:2])
+        category = camp.findAll("span", {"class": "dpAcademics"})
+        dct["category"] = category[0].text.lower()
+        categories = dct["category"]
+        text = ''
+        for cat in categories.split(', '):
+            text += desc_dict[cat]
+            text += '\n'
+        dct["description"] = text
+        index_list.append(dct)
