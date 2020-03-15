@@ -95,7 +95,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain)
     if post_url != url:
         links_visited.append(post_url)
 
-
+#@NATHAN REMINDER TO CONNECT BELOW WITH ABOVE
 def make_index(soup, index_list, link):
     '''
     Adds dictionaries to the index list. 
@@ -177,4 +177,3 @@ def pull_values(tag):
     if len(values) == 1:
         values = values[0]
     return (name, values)
-    # if numbers need to be integer, then would be integer
