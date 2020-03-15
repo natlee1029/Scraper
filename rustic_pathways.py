@@ -14,14 +14,14 @@ def crawler():
 
     numpages = 0
     links_visited = []
-    index_dictionary = {}
+    index_list = []
     pages_crawled = 0
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
     page_parser_q.put(starting_url)
     while page_parser_q.empty() == False:
         link = page_parser_q.get()
-        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary)
+        mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list)
         numpages += 1
 
 
@@ -33,14 +33,14 @@ def crawler():
             html = util.read_request(request)
             soup = bs4.BeautifulSoup(html, features="html5lib")
 
-    # df = pd.DataFrame(index_dictionary)
+    # df = pd.DataFrame(index_list)
 
     # return data_scraping.write_to_csv(df, './demo_cata.csv')
 
 
-def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_dictionary):
+def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list):
     '''
-    Crawl the college catalog and adds to an index dictionary to map set of
+    Crawl the college catalog and adds to an index list to map set of
     words with associated course identifier.
 
     Inputs:
@@ -48,7 +48,7 @@ def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain
         q: queue of urls in line to be crawled
         links_visited: list of visited links
         limiting_domain: domain name
-        index_dictionary: dictionary that maps words to course identifiers
+        index_list: list of dictionaries for each webpage
     '''
     if url in links_visited:
         return
