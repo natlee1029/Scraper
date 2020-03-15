@@ -83,6 +83,13 @@ def find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, l
 
 
 def make_index(soup, index_list, link):
+    '''
+    Adds dictionaries to the index list. 
+    Inputs:
+        soup: soup object from the text of the HTML document
+        index_list: list of dictionaries that maps words to course identifiers
+        link: current webpage link
+    '''
     # link2 = "https://www.summerdiscovery.com/ucla/academic-options"
     link2 = link + "/academic-options"
     page2 = requests.get(link2)
@@ -123,7 +130,6 @@ def make_index(soup, index_list, link):
     ages = re.search('[(](.+?)[)]', age_grade).group(1).replace('-',',')
     ages = re.sub(r'[a-z]+', ' ', ages).strip(' ').split(',')
 
-    index_list = []
     for camp in camps:
         dct = {"ages": ages, "grades": grades, "location": location, "website": link}
         tuition = camp.findAll("span", {"class": "dpTuition"})
