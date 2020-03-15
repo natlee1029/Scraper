@@ -15,7 +15,7 @@ def crawler():
 
     numpages = 0
     links_visited = []
-    index_list = {}
+    index_list = []
     pages_crawled = 0
     page_parser_q = queue.Queue()
     pull_info_q = queue.Queue()
@@ -121,19 +121,23 @@ def make_index(soup, index_list):
         location = re.sub(r'[^\w\s]','',location).lower()
         sidebar['location'] = location
     link = soup.find_all("div", id="website_link")
-    href = link[0].a.get("href")
-    sidebar['website'] = href
+    if link != []:
+        href = link[0].a.get("href")
+        sidebar['website'] = href
     title = soup.find_all("title")
-    title = title[0].text
-    title = re.sub(r'[^\w\s]','',title).lower()
-    title = title.replace("\n", " ")
-    sidebar['title'] = title
+    if title != []:
+        title = title[0].text
+        title = re.sub(r'[^\w\s]','',title).lower()
+        title = title.replace("\n", " ")
+        sidebar['title'] = title
     description1 = soup.find_all("div", class_="listing-description")
-    description1 = description1[0].text.lower()
-    description1 = re.sub(r'[^\w\s]','',title).strip()
+    if description1 != []:
+        description1 = description1[0].text.lower()
+        description1 = re.sub(r'[^\w\s]','',title).strip()
     description2 = soup.find_all("div", class_="listing-more-info")
-    description2 = description2[0].text.lower()
-    description2 = re.sub(r'[^\w\s]','',title).strip()
+    if description2 != []:
+        description2 = description2[0].text.lower()
+        description2 = re.sub(r'[^\w\s]','',title).strip()
     description = description1 + description2
     sidebar['description'] = description
     index_list.append(sidebar)
