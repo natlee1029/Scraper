@@ -115,13 +115,13 @@ def make_index(soup, index_list, link):
     tags = tags[0].find_all("li", class_ = "Table__Row")
     for tag in tags:
         name, value = pull_values(tag)
-        if name = 'ages':
+        if name == 'ages':
             value = value.replace('-',',')
             value = re.sub(r'[a-z]+', ' ', ages).strip(' ').split(',')            
-        if name = 'cost':
+        if name == 'cost':
             name = 'minimum_cost'
             value = re.sub('\D','', value)
-        if name = 'session length':
+        if name == 'session length':
             value = re.sub('\D','', value)  
             value = value // 7
         sidebar[name] = value
