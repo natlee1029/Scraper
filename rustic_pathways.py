@@ -24,14 +24,15 @@ def crawler():
         mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list)
         numpages += 1
 
-
     while pull_info_q.empty() == False:
         page_link = pull_info_q.get()
-        print(list(pull_info_q.queue))
+        # print(page_link)
         request = util.get_request(page_link)
         if request is not None:
             html = util.read_request(request)
             soup = bs4.BeautifulSoup(html, features="html5lib")
+            make_index(soup, index_list, page_link)
+            # print(index_list)
 
     # df = pd.DataFrame(index_list)
 
@@ -95,7 +96,6 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain)
     if post_url != url:
         links_visited.append(post_url)
 
-#@NATHAN REMINDER TO CONNECT BELOW WITH ABOVE
 def make_index(soup, index_list, link):
     '''
     Adds dictionaries to the index list. 
@@ -109,37 +109,50 @@ def make_index(soup, index_list, link):
     title = soup.find_all("title")[0].text
     title = re.sub(r'[^\w\s]','',title).lower()
     title = title.strip()
+    title = re.sub('\n+','', title)
+    title = re.sub('\s+',' ', title)    
     sidebar['title'] = title
-    sidebar['website'] = link
     tags = soup.find_all("div", class_ = "Layer Layer--BackgroundWatercolor Util__MobileOnly Special__PrintProgramDetails")
     tags = tags[0].find_all("li", class_ = "Table__Row")
-    for tag in tags:
+    for tag in tags[::]:
+        sidebar['website'] = link
         name, value = pull_values(tag)
+        value = value.strip('\n')
         if name == 'ages':
             value = value.replace('-',',')
-            value = re.sub(r'[a-z]+', ' ', ages).strip(' ').split(',')            
+            value = re.sub(r'[a-z]+', ' ', value).strip(' ').split(',') 
+            value_list = []
+            for val in value:
+                val = val.strip('\n')
+                value_list.append(val)
+            value = value_list         
         if name == 'cost':
             name = 'minimum_cost'
+            value = value.split('plus')[0]
             value = re.sub('\D','', value)
         if name == 'session length':
             value = re.sub('\D','', value)  
-            value = value // 7
+            value = int(value) // 7
+        if name == 'program types':
+            value = re.sub('\n+',' ', value)
         sidebar[name] = value
-
-    description = tags.find_all("div", class_="TextBlock")
-    description = description.find_all('p')
+    tags1 = soup.find_all("div", class_ = "Layer Layer--PaddingBottomLarge")
+    description = tags1[0].find_all("div", class_="TextBlock")
+    description = description[0].find_all('p')
     description = description[0].text.lower()
-    description = re.sub(r'[^\w\s]','',title).strip()
+    description = re.sub(r'[^\w\s]','',description).strip()
+    description = re.sub('\n+',' ', description)
     sidebar['description'] = description
-
     dates = soup.find_all("h4", class_ = "Heading Heading--Title Heading--FontSizeSmaller Heading--FontWeightLight")
     session_start = []
     for date in dates:
         date = date.text.lower()
         date = date.split(' ')[0]
+        date = date.strip('\n')
         session_start.append(date)
     sidebar['session start'] = session_start
     index_list.append(sidebar)
+
 
 def pull_values(tag):
     '''
@@ -165,15 +178,11 @@ def pull_values(tag):
     value_tags = tag.find_all("span", class_="Heading Heading--Datum")
     if value_tags == []:
         value_tags = tag.find_all("h3", class_="Heading Heading--Datum")
-        actual_tag = value_tags[0].find_all('a', class_="FlagLink")   
+        actual_tag = value_tags[0].find_all('a', class_="FlagLink") 
+        if len(actual_tag) > 0:
+            actual_tag = actual_tag[0].text.lower()
+        else:
+            actual_tag = "ataglance"
     else:
-        actual_tag = value_tags[0]
-    values = []
-    for value in actual_tag:
-        value = value.text
-        value = re.sub(r'[^\w\s]','',value).lower()
-        value = value.strip()
-        values.append(value)
-    if len(values) == 1:
-        values = values[0]
-    return (name, values)
+        actual_tag = value_tags[0].text.lower()
+    return (name, actual_tag)
