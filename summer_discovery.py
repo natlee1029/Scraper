@@ -25,13 +25,15 @@ def crawler():
         mini_crawler(link, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list)
         numpages += 1
 
-    while pull_info_q.empty() = False:
-        link = pull_info_q.get()
-        make_index(link, )
+    while pull_info_q.empty() == False:
+        page_link = pull_info_q.get()
+        make_index(index_list, page_link)
 
-    df = pd.DataFrame(index_list)
+    print(len(index_list))
 
-    return data_scraping.write_to_csv(df, './demo_cata.csv')
+    # df = pd.DataFrame(index_list)
+
+    # return data_scraping.write_to_csv(df, './demo_cata.csv')
 
 
 def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list):
@@ -86,18 +88,20 @@ def find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, l
         links_visited.append(post_url)
 
 
-def make_index(soup, index_list, link):
+def make_index(index_list, link):
     '''
     Adds dictionaries to the index list. 
     Inputs:
-        soup: soup object from the text of the HTML document
         index_list: list of dictionaries that maps words to course identifiers
         link: current webpage link
     '''
     # link2 = "https://www.summerdiscovery.com/ucla/academic-options"
+    page = requests.get(link)
     link2 = link + "/academic-options"
     page2 = requests.get(link2)
-    soup2 = BeautifulSoup(page2.content, "html.parser")
+    if page is None or page2 is None:
+        return
+    soup2 = bs4.BeautifulSoup(page2.content, "html.parser")
 
     courses = soup2.findAll("ul", {"class": "academics_pro"})
     desc_dict = {}
@@ -114,8 +118,7 @@ def make_index(soup, index_list, link):
 
 
     # link = "https://www.summerdiscovery.com/ucla"
-    page = requests.get(link)
-    soup = BeautifulSoup(page.content, "html.parser")
+    soup = bs4.BeautifulSoup(page.content, "html.parser")
     all_camps = soup.findAll("span", {"class": "datesAndPrices"})
     camps = all_camps[0].findAll("li")
 
@@ -153,7 +156,8 @@ def make_index(soup, index_list, link):
         categories = dct["category"]
         text = ''
         for cat in categories.split(', '):
-            text += desc_dict[cat]
-            text += '\n'
+            if cat in desc_dict:
+                text += desc_dict[cat]
+                text += '\n'
         dct["description"] = text
         index_list.append(dct)
