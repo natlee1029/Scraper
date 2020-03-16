@@ -4,6 +4,13 @@ import teenlife_crawler
 import summer_discovery
 
 def get_data():
+	'''
+	Imports all the data from the crawlers and makes them into pandas dataframes
+	Inputs:
+		none
+	Returns:
+		List of dataframes
+	'''
 	df_teenlife = teenlife_crawler.crawler()
 	df_rustic = rustic_pathways.crawler()
 	df_summer = summer_discovery.crawler()
@@ -20,15 +27,6 @@ lower_states = []
 for i in states:
 	lower_states.append(i.lower())
 
-
-# INDEX_IGNORE = set(['a', 'also', 'an', 'and', 'are', 'as', 'at', 'be',
-#                     'but', 'by', 'course', 'for', 'from', 'how', 'i',
-#                     'ii', 'iii', 'in', 'include', 'is', 'not', 'of',
-#                     'on', 'or', 's', 'sequence', 'so', 'social', 'students',
-#                     'such', 'that', 'the', 'their', 'this', 'through', 'to',
-#                     'topics', 'units', 'we', 'were', 'which', 'will', 'with',
-#                     'yet', 'summer', 'program', 'on', 'teenlife'])
-
 dictionary_na = {'ages': '0', 'description' : 'No description specified',
 					 'category': 'No subject specified', 'destinations': 'No country specified',
 					 'location': 'No city specified', 'minimum cost': 0, 'website': 'No url specified',
@@ -41,6 +39,13 @@ rename_summer = {'program':'title', }
 
 
 def clean_data(df):
+	'''
+	Cleans the data of a dataframe
+	Inputs:
+		df: Pandas dataframe to be cleaned
+	Returns:
+		Cleaned df
+	'''
 	min_ages = []
 	max_ages = []
 	columns_to_drop = []
@@ -89,6 +94,12 @@ def clean_data(df):
 	return df
 
 def write_to_csv(file_path):
+	'''
+	Takes a file path and merges all the data frames from the crawler and writes them to a csv
+	Input:
+		File path: the file path that you want to write the csv (we wrote it to 'mysite/data.csv')
+	Returns: none
+	'''
 	list_df = get_data()
 	good_df = []
 	for i in list_df:
