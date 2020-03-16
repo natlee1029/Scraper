@@ -189,12 +189,12 @@ def home(request):
 
 
             try:
-                res = summer.demo(summer.DATABASE_FILENAME, summer.demo_string2, summer.demo_arg2)
+                res = summer.demo(args)
             except Exception as e:
                 print('Exception caught')
                 bt = traceback.format_exception(*sys.exc_info()[:3])
                 context['err'] = """
-                An exception was thrown in find_listings:
+                An exception was thrown in demo:
                 <pre>{}
 {}</pre>
                 """.format(e, '\n'.join(bt))
