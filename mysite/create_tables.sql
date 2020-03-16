@@ -1,13 +1,15 @@
-CREATE TABLE program_info (
+CREATE TABLE programs (
    id integer,
-   ages varchar(17),
-   deadline integer,
-   fee integer,
-   subject varchar(50),
-   country varchar(20),
-   city varchar(30),
-   program_url varchar(350)
+   category varchar(500),
+   description varchar(50000),
+   city varchar(60),
+   cost integer,
+   title varchar(500),
+   website varchar(500),
+   country varchar(50),
+   min_age integer,
+   max_age integer
 );
 
-
-.import demo_cata.csv program_info
+.separator ','
+.import sample.csv programs
