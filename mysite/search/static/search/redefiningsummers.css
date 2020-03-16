@@ -27,10 +27,6 @@ body {
 .carousel {
 	max-width: auto;
 	overflow: hidden;
-	max-height: 700px;
+	max-height: 2048px;
 }
 
-.carousel .item img {
-	max-height: 768px;
-	min-width: auto;
-}

@@ -141,8 +141,8 @@ class SearchForm(forms.Form):
         help_text='e.g. Chicago, Los Angeles',
         required=False)
     state = forms.CharField(
-        label='Search State',
-        help_text='e.g. Texas, New York',
+        label='Search State Abbreviation',
+        help_text='e.g. IL, TX',
         required=False)
     country = forms.CharField(
         label='Search Country',
