@@ -16,20 +16,12 @@
 <html>
     <head>
         <title>Redefining Summers</title>
-        <link rel="stylesheet" type="text/css" href="{% static "/main.css" %}" />
+        <link rel="stylesheet" type="text/css" href="{% static 'search/redefiningsummers.css' %}" />
     </head>
     <body>
 
-
-      <!-- Jumbotron: First thing you see when you open the page -->
-      <div class="jumbotron text-center bg-light" style="margin-bottom: 0px">
-        <h1>Summer Program Search</h1>
-        <p>Insert something catchy here</p>
-      </div>
-      <!-- End Jumbotron -->
-
       <!-- sticky navbar -->
-      <nav class="navbar bg-light navbar-light sticky-top">
+      <nav class="navbar bg-dark navbar-dark sticky-top">
         <a class="navbar-brand" href="#">Home</a>
         <ul class="navbar-nav">
           <li class="nav-item">
@@ -39,6 +31,15 @@
       </nav>
       <!-- End navbar -->
 
+      <!-- Jumbotron: First thing you see when you open the page -->
+      <div class="jumbotron text-center bg-light" style="margin-bottom: 0px">
+        <h1>Redefining Summers</h1>
+        <h2>A Summer Program Search for High School Students</h2>
+        <br>
+        <p>High school summers are tough. Gone are the days of ice cream trucks and playing in the sprinkler. With SATs, college applications, and leaving home on your mind, it's difficult to find the time to discover the perfect summer opportunity. Redefining Summers was created to do that work for you. We've compiled a database of programs spanning the globe, ranging from academic research to paid intership opportunities. Just fill out our search form to get started exploring!</p>
+      </div>
+      <!-- End Jumbotron -->
+
       <!-- Carousel with pictures in them -->
       <div id="demo" class="carousel slide" data-ride="carousel">
 
@@ -47,19 +48,24 @@
           <li data-target="#demo" data-slide-to="0" class="active"></li>
           <li data-target="#demo" data-slide-to="1"></li>
           <li data-target="#demo" data-slide-to="2"></li>
+          <li data-target="#demo" data-slide-to="3"></li>
         </ul>
 
         <!-- The slideshow -->
         <div class="carousel-inner">
           <div class="carousel-item active">
+            <img src="https://www.goabbeyroad.com/wp-content/themes/AbbeyTheme/dist/assets/images/slide-abbeyroad-2.webp" width="100%" height="100%">
+          </div>
+          <div class="carousel-item">
+            <img src="https://www.nationalgeographic.com/content/dam/student-expeditions/Destinations/North-America/Costa-Rica-Community-Service/hero-costa-rica-swimming.adapt.1900.1.jpg" width="100%" height="100%">
+          </div>
+          <div class="carousel-item">
             <img src="https://teenlife.s3.amazonaws.com/media/uploads/blogs/summer-programs-high-school-students/summer-programs-for-high-school-students.jpg" width="100%" height="100%">
           </div>
           <div class="carousel-item">
             <img src="https://images.squarespace-cdn.com/content/5269fbd3e4b0eb2b76ccc1db/1574907594327-KYR40X4F97BQ40XLES6R/summer-programs-for-high-school-students.jpg?format=1500w&content-type=image%2Fjpeg" width="100%" height="100%">
           </div>
-          <div class="carousel-item">
-            <img src="https://www.goabbeyroad.com/wp-content/themes/AbbeyTheme/dist/assets/images/slide-abbeyroad-2.webp" width="100%" height="100%">
-          </div>
+          
         </div>
 
         <!-- Left and right controls -->
