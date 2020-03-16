@@ -7,7 +7,9 @@ DATABASE_FILENAME = os.path.join(DATA_DIR, 'programs.db')
 
 def demo(args):
 	'''
-	args (dictionary): list of the
+	Searches the database for the appropriate categories.
+
+	args (dictionary): list of args from the user interface
 	'''
 	connection = sqlite3.connect(DATABASE_FILENAME)
 	cursor = connection.cursor()
@@ -21,6 +23,13 @@ def demo(args):
 	return (header, programs)
 
 def get_s(args_from_ui):
+	'''
+	Creates the string for the SQL Query
+
+	Outputs:
+		select_string: SQL query string
+		list_of_args: fill in values for the ? in SQL string
+	'''
 	select_string = 'SELECT '
 	select_string += select_columns(args_from_ui, select_string)
 	select_string += " FROM programs WHERE "
@@ -52,6 +61,12 @@ def get_s(args_from_ui):
 
 
 def select_columns(args_from_ui, select_string):
+	'''
+	Selects the columns to present from the database
+
+	Outputs:
+		Select portion of the SQL query string
+	'''
 	terms = ["title"]
 	for key in args_from_ui.keys():
 		if key == "cost_lower" or key == "cost_upper":
