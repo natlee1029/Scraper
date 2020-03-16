@@ -33,8 +33,10 @@ def crawler():
             soup = bs4.BeautifulSoup(html, features="html5lib")
             make_index(soup, index_list, page_link)
             # print(index_list)
+    print(index_list[0])
 
-    # df = pd.DataFrame(index_list)
+    df = pd.DataFrame(index_list)
+    return df
 
     # return data_scraping.write_to_csv(df, './demo_cata.csv')
 
@@ -125,7 +127,9 @@ def make_index(soup, index_list, link):
             for val in value:
                 val = val.strip('\n')
                 value_list.append(val)
-            value = value_list         
+            value = value_list 
+        if name == "service types":
+            value = re.sub('\n+',' ', value)        
         if name == 'cost':
             name = 'minimum_cost'
             value = value.split('plus')[0]
@@ -182,7 +186,7 @@ def pull_values(tag):
         if len(actual_tag) > 0:
             actual_tag = actual_tag[0].text.lower()
         else:
-            actual_tag = "ataglance"
+            actual_tag = ""
     else:
         actual_tag = value_tags[0].text.lower()
     return (name, actual_tag)
