@@ -9,22 +9,24 @@ demo_string2 = 'SELECT program_url FROM program_info WHERE subject = ?'
 demo_arg1 = [500]
 demo_arg2 = ['stem']
 
-def demo(database, s, args):
+def demo(database, args):
 	'''
 	args (dictionary): list of the
 	'''
 	connection = sqlite3.connect(database)
 	cursor = connection.cursor()
-	table = cursor.execute(s, args)
+	select_string, search_values = get_s(args)
+	table = cursor.execute(select_string, search_values)
 	header = get_header(table)
-	courses = table.fetchall()
-	return (header, courses)
+	programs = table.fetchall()
+	return (header, programs)
 
 def get_s(args_from_ui):
-	select_string = 'SELECT title, program_url'
+	select_string = 'SELECT '
+	select_columns(args_from_ui, select_string)
+	select_string += " FROM program_info WHERE "
 	list_of_args = []
 	for key, value in args_from_ui.items():
-		select_columns(key, select_string)
 		if key == "terms":
 			select_string += 'description LIKE \'%?%\' AND '
 		if key == 'cost_lower':
@@ -43,16 +45,20 @@ def get_s(args_from_ui):
 	select_string = select_string[:-5] + ';'
 	return (select_string, list_of_args)
 
-def select_columns(key, select_string):
-	set = {}
-	from_table = "FROM "
-	if key == "cost_lower" or key == "cost_upper":
-		select_string += "minimum_cost"
-	if key == "age_lower" or key == "age_upper":
-		select_string += "ages"
-	if key
 
-def from_tables(key, select_string):
+def select_columns(args_from_ui, select_string):
+	terms = ["title"]
+	for key in args_from_ui:
+		if key == "cost_lower" or key == "cost_upper":
+			terms.append("minimum_cost")
+		if key == "age_lower" or "age_upper":
+			terms.append("ages")
+		if key == 'city' or key == "state" or key == "country":
+			terms.append("location")
+		if key == "subject":
+			terms.append("category")
+	terms.append('website')
+	select_string += str(terms).strip('[]')
 
 
 def get_header(cursor):
