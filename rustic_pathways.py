@@ -38,7 +38,7 @@ def crawler():
     df = pd.DataFrame(index_list)
     return df
 
-    # return data_scraping.write_to_csv(df, './demo_cata.csv')
+
 
 
 def mini_crawler(url, page_parser_q, pull_info_q, links_visited, limiting_domain, index_list):
