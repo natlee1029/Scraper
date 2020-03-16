@@ -3,15 +3,11 @@
 <html>
     <head>
         <title>Redefining Summers</title>
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}">
-
+        <link rel="stylesheet" type="text/css" href="{% static "/main.css" %}" />
     </head>
     <body>
         <div id="header">
             <h1>Summer Program Search</h1>
-            
         </div>
         <div class="frame">
             <form method="get">
@@ -40,7 +36,6 @@
         <div class="frame">
             {% if result != None %}
             <div class="results">
-                <p>Here are your results:</p>
                 <table class="courses">
                     <tr>
                         {% for col in columns %}
