@@ -28,7 +28,7 @@ def get_s(args_from_ui):
 	for key, value in args_from_ui.items():
 		if key == "terms":
 			select_string += 'description LIKE ? AND '
-			value = "\'%" + str(value) + "%\'"
+			value = '%' + str(value) + '%'
 		if key == 'cost_lower':
 			select_string += 'cost >= ? AND '
 		if key == 'cost_upper':
@@ -37,12 +37,15 @@ def get_s(args_from_ui):
 			select_string += 'min_age >= ? AND '
 		if key == 'age_upper':
 			select_string += 'max_age <= ? AND '
-		if key == 'city' or key == "state" or key == "country":
+		if key == 'city' or key == "state":
 			select_string += 'city LIKE ? AND '
-			value = "\'%" + str(value) + "%\'"
+			value = "%" + str(value) + "%"
+		if key == "country":
+			select_string += 'country LIKE ? AND '
+			value = "%" + str(value) + "%"
 		if key == 'subject':
 			select_string += 'category LIKE ? AND '
-			value = "\'%" + str(value) + "%\'"
+			value = "%" + str(value) + "%"
 		list_of_args.append(value)
 	select_string = select_string[:-5] + ';'
 	return (select_string, list_of_args)
