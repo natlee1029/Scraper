@@ -63,14 +63,6 @@ def is_absolute_url(url):
         return False
     return urllib.parse.urlparse(url).netloc != ""
 
-
-def remove_fragment(url):
-    '''remove the fragment from a url'''
-
-    (url, frag) = urllib.parse.urldefrag(url)
-    return url
-
-
 def convert_if_relative_url(current_url, new_url):
     '''
     Attempt to determine whether new_url is a relative URL and if so,
@@ -114,11 +106,6 @@ def convert_if_relative_url(current_url, new_url):
         return urllib.parse.urljoin(current_url, new_url)
 
 
-ARCHIVES = ("https://www.classes.cs.uchicago.edu/archive/2015/winter"
-            "/12200-1/new.collegecatalog.uchicago.edu/thecollege/archives")
-LEN_ARCHIVES = len(ARCHIVES)
-
-
 def is_url_ok_to_follow(url, limiting_domain):
     '''
     Inputs:
@@ -145,9 +132,6 @@ def is_url_ok_to_follow(url, limiting_domain):
     if "@" in url:
         return False
 
-    if url[:LEN_ARCHIVES] == ARCHIVES:
-        return False
-
     parsed_url = urllib.parse.urlparse(url)
     if parsed_url.scheme != "http" and parsed_url.scheme != "https":
         return False
@@ -170,32 +154,3 @@ def is_url_ok_to_follow(url, limiting_domain):
     # does it have the right extension
     (filename, ext) = os.path.splitext(parsed_url.path)
     return (ext == "" or ext == ".html")
-
-
-def is_subsequence(tag):
-    '''
-    Does the tag represent a subsequence?
-    '''
-    return isinstance(tag, bs4.element.Tag) and 'class' in tag.attrs \
-        and tag['class'] == ['courseblock', 'subsequence']
-
-
-def is_whitespace(tag):
-    '''
-    Does the tag represent whitespace?
-    '''
-    return isinstance(tag, bs4.element.NavigableString) and (tag.strip() == "")
-
-
-def find_sequence(tag):
-    '''
-    If tag is the header for a sequence, then
-    find the tags for the courses in the sequence.
-    '''
-    rv = []
-    sib_tag = tag.next_sibling
-    while is_subsequence(sib_tag) or is_whitespace(tag):
-        if not is_whitespace(tag):
-            rv.append(sib_tag)
-        sib_tag = sib_tag.next_sibling
-    return rv
