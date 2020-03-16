@@ -3,7 +3,6 @@ import util
 import bs4
 import queue
 import sys
-import csv
 import pandas as pd
 import data_scraping
 
