@@ -2,45 +2,47 @@ import sqlite3
 import os
 
 DATA_DIR = os.path.dirname(__file__)
-DATABASE_FILENAME = os.path.join(DATA_DIR, 'program_info.db')
+DATABASE_FILENAME = os.path.join(DATA_DIR, 'programs.db')
 
-demo_string1 = 'SELECT program_url FROM program_info WHERE fee < ?'
-demo_string2 = 'SELECT program_url FROM program_info WHERE subject = ?'
-demo_arg1 = [500]
-demo_arg2 = ['stem']
 
-def demo(database, args):
+def demo(args):
 	'''
 	args (dictionary): list of the
 	'''
-	connection = sqlite3.connect(database)
+	connection = sqlite3.connect(DATABASE_FILENAME)
 	cursor = connection.cursor()
 	select_string, search_values = get_s(args)
+	print(select_string)
+	print(search_values)
 	table = cursor.execute(select_string, search_values)
 	header = get_header(table)
 	programs = table.fetchall()
+	print(programs)
 	return (header, programs)
 
 def get_s(args_from_ui):
 	select_string = 'SELECT '
-	select_columns(args_from_ui, select_string)
-	select_string += " FROM program_info WHERE "
+	select_string += select_columns(args_from_ui, select_string)
+	select_string += " FROM programs WHERE "
 	list_of_args = []
 	for key, value in args_from_ui.items():
 		if key == "terms":
-			select_string += 'description LIKE \'%?%\' AND '
+			select_string += 'description LIKE ? AND '
+			value = "\'%" + str(value) + "%\'"
 		if key == 'cost_lower':
-			select_string += '? >= fee AND '
+			select_string += 'cost >= ? AND '
 		if key == 'cost_upper':
-			select_string += 'fee <= ? AND '
+			select_string += 'cost <= ? AND '
 		if key == 'age_lower':
-			select_string += 'min_ages >= ? AND '
+			select_string += 'min_age >= ? AND '
 		if key == 'age_upper':
-			select_string += 'max_ages <= ? AND '
+			select_string += 'max_age <= ? AND '
 		if key == 'city' or key == "state" or key == "country":
-			select_string += 'location LIKE \'%?%\' AND '
+			select_string += 'city LIKE ? AND '
+			value = "\'%" + str(value) + "%\'"
 		if key == 'subject':
-			select_string += 'subject = ? AND '
+			select_string += 'category LIKE ? AND '
+			value = "\'%" + str(value) + "%\'"
 		list_of_args.append(value)
 	select_string = select_string[:-5] + ';'
 	return (select_string, list_of_args)
@@ -48,17 +50,21 @@ def get_s(args_from_ui):
 
 def select_columns(args_from_ui, select_string):
 	terms = ["title"]
-	for key in args_from_ui:
+	for key in args_from_ui.keys():
 		if key == "cost_lower" or key == "cost_upper":
-			terms.append("minimum_cost")
-		if key == "age_lower" or "age_upper":
-			terms.append("ages")
-		if key == 'city' or key == "state" or key == "country":
+			terms.append("cost")
+		if key == "age_lower" or key == "age_upper":
+			if "min_age" not in terms or "max_age" not in terms:
+				terms.append("min_age")
+				terms.append('max_age')
+		if key == 'city':
 			terms.append("location")
+		if key == "country":
+			terms.append('country')
 		if key == "subject":
 			terms.append("category")
 	terms.append('website')
-	select_string += str(terms).strip('[]')
+	return ", ".join(terms)
 
 
 def get_header(cursor):
