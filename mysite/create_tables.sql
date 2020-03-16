@@ -1,15 +1,15 @@
 CREATE TABLE programs (
    id integer,
    category varchar(500),
-   description varchar(50000),
-   city varchar(60),
+   description varchar(500000),
+   country varchar(60),
+   city varchar(100),
+   max_age integer,
+   min_age integer,
    cost integer,
    title varchar(500),
-   website varchar(500),
-   country varchar(50),
-   min_age integer,
-   max_age integer
+   website varchar(5000)
 );
 
 .separator ','
-.import sample.csv programs
+.import data.csv programs
