@@ -33,8 +33,6 @@ def crawler():
             soup = bs4.BeautifulSoup(html, features="html5lib")
             make_index(soup, index_list, page_link)
             # print(index_list)
-    print(index_list[0])
-
     df = pd.DataFrame(index_list)
     return df
 
@@ -100,7 +98,7 @@ def find_links(soup, url, post_url, pull_info_q, links_visited, limiting_domain)
 
 def make_index(soup, index_list, link):
     '''
-    Adds dictionaries to the index list. 
+    Adds dictionaries to the index list.
 
     Inputs:
         soup: soup object from the text of the HTML document
@@ -112,7 +110,7 @@ def make_index(soup, index_list, link):
     title = re.sub(r'[^\w\s]','',title).lower()
     title = title.strip()
     title = re.sub('\n+','', title)
-    title = re.sub('\s+',' ', title)    
+    title = re.sub('\s+',' ', title)
     sidebar['title'] = title
     tags = soup.find_all("div", class_ = "Layer Layer--BackgroundWatercolor Util__MobileOnly Special__PrintProgramDetails")
     tags = tags[0].find_all("li", class_ = "Table__Row")
@@ -122,20 +120,20 @@ def make_index(soup, index_list, link):
         value = value.strip('\n')
         if name == 'ages':
             value = value.replace('-',',')
-            value = re.sub(r'[a-z]+', ' ', value).strip(' ').split(',') 
+            value = re.sub(r'[a-z]+', ' ', value).strip(' ').split(',')
             value_list = []
             for val in value:
                 val = val.strip('\n')
                 value_list.append(val)
-            value = value_list 
+            value = value_list
         if name == "service types":
-            value = re.sub('\n+',' ', value)        
+            value = re.sub('\n+',' ', value)
         if name == 'cost':
             name = 'minimum_cost'
             value = value.split('plus')[0]
             value = re.sub('\D','', value)
         if name == 'session length':
-            value = re.sub('\D','', value)  
+            value = re.sub('\D','', value)
             value = int(value) // 7
         if name == 'program types':
             value = re.sub('\n+',' ', value)
@@ -182,7 +180,7 @@ def pull_values(tag):
     value_tags = tag.find_all("span", class_="Heading Heading--Datum")
     if value_tags == []:
         value_tags = tag.find_all("h3", class_="Heading Heading--Datum")
-        actual_tag = value_tags[0].find_all('a', class_="FlagLink") 
+        actual_tag = value_tags[0].find_all('a', class_="FlagLink")
         if len(actual_tag) > 0:
             actual_tag = actual_tag[0].text.lower()
         else:

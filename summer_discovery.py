@@ -28,9 +28,6 @@ def crawler():
     while pull_info_q.empty() == False:
         page_link = pull_info_q.get()
         make_index(index_list, page_link)
-
-    print(len(index_list))
-
     df = pd.DataFrame(index_list)
 
     return df
@@ -90,7 +87,7 @@ def find_links(soup, url, post_url, page_parser_q, pull_info_q, links_visited, l
 
 def make_index(index_list, link):
     '''
-    Adds dictionaries to the index list. 
+    Adds dictionaries to the index list.
     Inputs:
         index_list: list of dictionaries that maps words to course identifiers
         link: current webpage link
@@ -149,7 +146,7 @@ def make_index(index_list, link):
         dct["session start"] = start_date
         duration = camp.findAll("span", {"class": "dpDuration"})
         prog = duration[0].text.split(' (')[0].lower()
-        dct["program"] = program + ' ' + prog 
+        dct["program"] = program + ' ' + prog
         dct["session length"] = ' '.join(duration[0].text.lower().split(' ')[:2])
         category = camp.findAll("span", {"class": "dpAcademics"})
         dct["category"] = category[0].text.lower()
