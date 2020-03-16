@@ -52,7 +52,8 @@ def select_columns(args_from_ui, select_string):
 	terms = ["title"]
 	for key in args_from_ui.keys():
 		if key == "cost_lower" or key == "cost_upper":
-			terms.append("cost")
+			if 'cost' not in terms:
+				terms.append("cost")
 		if key == "age_lower" or key == "age_upper":
 			if "min_age" not in terms or "max_age" not in terms:
 				terms.append("min_age")
