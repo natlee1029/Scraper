@@ -1,0 +1,6 @@
+__pycache__
+mysite/__pycache__
+mysite/mysite/__pycache__
+mysite/search/__pycache__
+mysite/search/migrations/__pycache__
+

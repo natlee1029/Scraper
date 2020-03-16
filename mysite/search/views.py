@@ -117,19 +117,6 @@ class AgeRange(IntegerRange):
         return data_list
 
 
-class DateRange(IntegerRange):
-    def compress(self, data_list):
-        super(DateRange, self).compress(data_list)
-        for v in data_list:
-            if not 1 <= v <= 21:
-                raise forms.ValidationError(
-                    'Ages must be in the range 1 to 21.')
-        if data_list and (data_list[1] < data_list[0]):
-            raise forms.ValidationError(
-                'Lower bound must not exceed upper bound.')
-        return data_list
-
-
 RANGE_WIDGET = forms.widgets.MultiWidget(widgets=(forms.widgets.NumberInput,
                                                   forms.widgets.NumberInput))
 
@@ -145,12 +132,22 @@ class SearchForm(forms.Form):
         widget=RANGE_WIDGET,
         required=False)
     age = AgeRange(
-        label='Age (lower/upper)',
+        label='Age (Lower/Upper)',
         help_text='e.g. 12-15',
         widget=RANGE_WIDGET,
         required=False)
-
-    location = forms.ChoiceField(label = "Location", choices = LOCATION, required = False)
+    city = forms.CharField(
+        label='Search City',
+        help_text='e.g. Chicago, Los Angeles',
+        required=False)
+    state = forms.CharField(
+        label='Search State',
+        help_text='e.g. Texas, New York',
+        required=False)
+    country = forms.CharField(
+        label='Search Country',
+        help_text='e.g. United States, Costa Rica',
+        required=False)
     subject = forms.ChoiceField(label = "Subject", choices = SUBJECT, required = False)
 
 
@@ -167,22 +164,28 @@ def home(request):
             args = {}
             if form.cleaned_data['query']:
                 args['terms'] = form.cleaned_data['query']
+            
             cost = form.cleaned_data['cost']
             if cost:
                 args['cost_lower'] = cost[0]
                 args['cost_upper'] = cost[1]
+
             age = form.cleaned_data['age']
             if age:
                 args['age_lower'] = age[0]
                 args['age_upper'] = age[1]
 
-            location = form.cleaned_data['location']
-            if location:
-                args['location'] = location
+            if form.cleaned_data['city']:
+                args['city'] = form.cleaned_data['city']
 
-            subject = form.cleaned_data['subject']
-            if subject:
-                args['subject'] = subject
+            if form.cleaned_data['state']:
+                args['state'] = form.cleaned_data['state']
+
+            if form.cleaned_data['country']:
+                args['country'] = form.cleaned_data['country']
+
+            if form.cleaned_data['subject']:
+                args['subject'] = form.cleaned_data['subject']
 
 
             try:

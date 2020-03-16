@@ -1,3 +1,16 @@
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
@@ -6,53 +19,128 @@
         <link rel="stylesheet" type="text/css" href="{% static "/main.css" %}" />
     </head>
     <body>
-        <div id="header">
-            <h1>Summer Program Search</h1>
+
+
+      <!-- Jumbotron: First thing you see when you open the page -->
+      <div class="jumbotron text-center bg-light" style="margin-bottom: 0px">
+        <h1>Summer Program Search</h1>
+        <p>Insert something catchy here</p>
+      </div>
+      <!-- End Jumbotron -->
+
+      <!-- sticky navbar -->
+      <nav class="navbar bg-light navbar-light sticky-top">
+        <a class="navbar-brand" href="#">Home</a>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#search">Search</a>
+          </li>
+        </ul>
+      </nav>
+      <!-- End navbar -->
+
+      <!-- Carousel with pictures in them -->
+      <div id="demo" class="carousel slide" data-ride="carousel">
+
+        <!-- Indicators -->
+        <ul class="carousel-indicators">
+          <li data-target="#demo" data-slide-to="0" class="active"></li>
+          <li data-target="#demo" data-slide-to="1"></li>
+          <li data-target="#demo" data-slide-to="2"></li>
+        </ul>
+
+        <!-- The slideshow -->
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="https://teenlife.s3.amazonaws.com/media/uploads/blogs/summer-programs-high-school-students/summer-programs-for-high-school-students.jpg" width="100%" height="100%">
+          </div>
+          <div class="carousel-item">
+            <img src="https://images.squarespace-cdn.com/content/5269fbd3e4b0eb2b76ccc1db/1574907594327-KYR40X4F97BQ40XLES6R/summer-programs-for-high-school-students.jpg?format=1500w&content-type=image%2Fjpeg" width="100%" height="100%">
+          </div>
+          <div class="carousel-item">
+            <img src="https://www.goabbeyroad.com/wp-content/themes/AbbeyTheme/dist/assets/images/slide-abbeyroad-2.webp" width="100%" height="100%">
+          </div>
         </div>
-        <div class="frame">
-            <form method="get">
-                {% csrf_token %}
-                <table class="form">
-                {{ form }}
-                </table>
-                <input type="submit" value="Submit" />
-            </form>
-        </div>
 
-        {% if args %}
-        <div class="args">
-            <pre>{{ args }}</pre>
-        </div>
-        {% endif %}
+        <!-- Left and right controls -->
+        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#demo" data-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </a>
+      </div>
+      <!-- End Carousel -->
 
-        {% if err %}
-        <div class="error">
-            {{ err|safe }}
-        </div>
-        {% endif %}
+      <!-- First row (Search area) with a light background-->
+        <div class="row bg-light">
+          <div class="col"></div>
 
-
-
-        <div class="frame">
-            {% if result != None %}
-            <div class="results">
-                <table class="courses">
-                    <tr>
-                        {% for col in columns %}
-                        <th>{{ col }}</th>
-                        {% endfor %}
-                    </tr>
-                    {% for entry in result %}
-                    <tr>
-                        {% for col in entry %}
-                        <td>{{ col }}</td>
-                        {% endfor %}
-                    </tr>
-                    {% endfor %}
-                </table>
+          <!-- Middle column with content (Search area) in it-->
+          <div class="col" id="search" style="margin-top:30px">
+            <div class="frame">
+                <form method="get">
+                    {% csrf_token %}
+                    <table class="form">
+                    {{ form }}
+                    </table>
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </form>
             </div>
-            <p class="num_results">Results: {{ num_results }}</p>
+
+            {% if args %}
+            <div class="args">
+                <pre>{{ args }}</pre>
+            </div>
             {% endif %}
+          </div>
+          <!-- End middle column -->
+
+          <div class="col"></div>
         </div>
+        <!-- End first row -->
+
+        <!-- Second row (Results area) with dark bacground -->
+        <div class="row bg-dark">
+          <div class="col"></div>
+
+          <!-- Middle column with content (results area) in it -->
+          <div class="col">
+            {% if err %}
+            <div class="error">
+              <p class="text-danger">
+                 {{ err|safe }}
+              </p>
+            </div>
+            {% endif %}
+            <div class="frame">
+                {% if result != None %}
+                <div class="results">
+                  <!-- table table-dark table-hover is a bootstrap element for a dark hovering table-->
+                    <table class="courses table table-dark table-hover">
+                        <tr>
+                            {% for col in columns %}
+                            <th>{{ col }}</th>
+                            {% endfor %}
+                        </tr>
+                        {% for entry in result %}
+                        <tr>
+                            {% for col in entry %}
+                            <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <p class="num_results">Results: {{ num_results }}</p>
+                {% endif %}
+            </div>
+          </div>
+          <!-- End middle col -->
+
+          <div class="col"></div>
+        </div>
+        <!-- End second row -->
+
     </body>
 </html>

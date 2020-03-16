@@ -21,9 +21,12 @@ def demo(database, s, args):
 	return (header, courses)
 
 def get_s(args_from_ui):
-	select_string = 'SELECT program_url FROM program_info WHERE '
+	select_string = 'SELECT title, program_url'
 	list_of_args = []
 	for key, value in args_from_ui.items():
+		select_columns(key, select_string)
+		if key == "terms":
+			select_string += 'description LIKE \'%?%\' AND '
 		if key == 'cost_lower':
 			select_string += '? >= fee AND '
 		if key == 'cost_upper':
@@ -32,13 +35,24 @@ def get_s(args_from_ui):
 			select_string += 'min_ages >= ? AND '
 		if key == 'age_upper':
 			select_string += 'max_ages <= ? AND '
-		if key == 'location':
-			select_string += 'city = ? AND '
+		if key == 'city' or key == "state" or key == "country":
+			select_string += 'location LIKE \'%?%\' AND '
 		if key == 'subject':
 			select_string += 'subject = ? AND '
 		list_of_args.append(value)
 	select_string = select_string[:-5] + ';'
 	return (select_string, list_of_args)
+
+def select_columns(key, select_string):
+	set = {}
+	from_table = "FROM "
+	if key == "cost_lower" or key == "cost_upper":
+		select_string += "minimum_cost"
+	if key == "age_lower" or key == "age_upper":
+		select_string += "ages"
+	if key
+
+def from_tables(key, select_string):
 
 
 def get_header(cursor):
