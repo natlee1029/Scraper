@@ -1,7 +1,7 @@
 
-This was a quarter long CS project to apply webscraping to a unique dataset. We scraped, cleaned, and updated \\
-summer camp datapoints from various websites and aggregated them into a simplistic interface platform  \\
-created through django. 
+This was a quarter long CS project to apply webscraping to a unique dataset. We scraped, cleaned, and updated 
+summer camp datapoints from various websites and aggregated them into a simplistic interface platform created 
+through django. 
 
 ## Packages:
 Pandas
