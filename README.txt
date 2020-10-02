@@ -1,10 +1,12 @@
-Packages:
+This was a quarter long CS project to apply webscraping to a unique dataset. We scraped, cleaned, and updated summer camp datapoints from various websites and aggregated them into a simplistic interface platform created through django. 
+
+## Packages:
 Pandas
 BeautifulSoup
 RegEx
 
 
-Files:
+## Files:
 teenlife_crawler.py (crawler for teenlife database)
 rustic_pathways.py (crawler for rustic pathways website)
 summer_discovery.py (crawler for summer discovery website)
@@ -16,7 +18,7 @@ mysite (django)
     summer.py (runs SQL queries)
     
 
-Usage:
+## Usage:
 (Run within mysite folder)
 python3 manage.py runserver
 
